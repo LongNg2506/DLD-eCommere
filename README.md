@@ -1,10 +1,10 @@
 # ChronoStore - Đồng Hồ Cao Cấp
 
-Dự án e-commerce ASP.NET Core MVC .NET 8 cho cửa hàng đồng hồ cao cấp.
+Dự án e-commerce ASP.NET Core MVC .NET 10 cho cửa hàng đồng hồ cao cấp.
 
 ## Yêu cầu hệ thống
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [SQL Server](https://www.microsoft.com/sql-server/sql-server-downloads) (LocalDB cũng được)
 - [Git](https://git-scm.com/)
 
@@ -146,7 +146,7 @@ dotnet test
 
 | Thành phần | Công nghệ |
 |---|---|
-| Framework | ASP.NET Core MVC .NET 8 |
+| Framework | ASP.NET Core MVC .NET 10 |
 | Database | SQL Server + Entity Framework Core |
 | Authentication | Cookie-based (ChronoAuth) |
 | UI | Razor View + Custom CSS |
