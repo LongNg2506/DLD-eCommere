@@ -1,0 +1,305 @@
+@{
+    ViewData["Title"] = "Help Center";
+}
+
+<section class="hero-section" style="min-height:50vh;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--accent) 0%,var(--bg-tertiary) 100%);">
+    <div class="container">
+        <div style="text-align:center;padding:60px 0;position:relative;z-index:2;">
+            <span class="section-badge" style="margin-bottom:20px;display:inline-block;background:rgba(255,255,255,0.15);color:#fff;padding:6px 16px;border-radius:20px;font-size:0.8rem;font-weight:500;letter-spacing:0.5px;">We're Here to Help</span>
+            <h1 class="inner-hero-title">Help Center</h1>
+            <p style="font-size:1.15rem;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;">Find answers to common questions or reach out to our support team for personalized assistance.</p>
+        </div>
+    </div>
+    <div style="position:absolute;bottom:-40px;left:0;right:0;height:80px;background:var(--bg-primary);border-radius:50% 50% 0 0;"></div>
+</section>
+
+<section style="padding:80px 0;background:var(--bg-primary);">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-3">
+                <div class="help-sidebar-wrap">
+                    <nav style="display:flex;flex-direction:column;gap:4px;">
+                        <a href="#ordering" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;text-decoration:none;color:var(--text-primary);font-weight:500;background:var(--bg-secondary);transition:all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                            Ordering & Payment
+                        </a>
+                        <a href="#shipping" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;text-decoration:none;color:var(--text-secondary);font-weight:500;transition:all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                            Shipping & Delivery
+                        </a>
+                        <a href="#returns" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;text-decoration:none;color:var(--text-secondary);font-weight:500;transition:all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                            Returns & Refunds
+                        </a>
+                        <a href="#account" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;text-decoration:none;color:var(--text-secondary);font-weight:500;transition:all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            Account & Profile
+                        </a>
+                        <a href="#warranty" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;text-decoration:none;color:var(--text-secondary);font-weight:500;transition:all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Warranty & Repairs
+                        </a>
+                        <a href="#contact" style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;text-decoration:none;color:var(--text-secondary);font-weight:500;transition:all 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            Contact Us
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <div id="ordering" style="margin-bottom:60px;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+                        <span style="width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        </span>
+                        Ordering & Payment
+                    </h2>
+                    <div class="faq-group" style="display:flex;flex-direction:column;gap:12px;">
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">How do I place an order?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Browse our collection, select your desired watch, choose any customizations (strap, dial), add to cart, and proceed to checkout. You can checkout as a guest or create an account for faster future purchases. We accept Visa, Mastercard, PayPal, and bank transfer.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">Can I modify or cancel my order?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Yes, you can modify or cancel your order within 2 hours of placing it, provided it hasn't shipped yet. Contact our support team immediately with your order number, and we'll assist you right away.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">What payment methods do you accept?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    We accept all major credit cards (Visa, Mastercard, American Express), PayPal, Apple Pay, Google Pay, and bank transfer. All transactions are secured with 256-bit SSL encryption.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">Is my payment information secure?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Absolutely. We use industry-standard SSL encryption and never store your full credit card details on our servers. Payments are processed through PCI-compliant payment gateways.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="shipping" style="margin-bottom:60px;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+                        <span style="width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        </span>
+                        Shipping & Delivery
+                    </h2>
+                    <div class="faq-group" style="display:flex;flex-direction:column;gap:12px;">
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">How long does delivery take?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Standard shipping takes 5-7 business days. Express shipping (2-3 business days) is available at checkout. International orders typically arrive within 10-15 business days depending on the destination.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">Do you offer free shipping?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Yes! We offer free standard shipping on all orders over $100. Express and international shipping fees apply regardless of order value.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">How can I track my order?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Once your order ships, you'll receive a tracking number via email. You can also track your order by logging into your account and viewing your order history. All watches are shipped in tamper-proof packaging with insurance coverage.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="returns" style="margin-bottom:60px;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+                        <span style="width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                        </span>
+                        Returns & Refunds
+                    </h2>
+                    <div class="faq-group" style="display:flex;flex-direction:column;gap:12px;">
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">What is your return policy?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    We offer a 30-day satisfaction guarantee. If you're not completely satisfied with your purchase, return it in original condition with all accessories and packaging for a full refund or exchange. Customized watches are final sale.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">How do I initiate a return?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Log into your account, go to Order History, select the order, and click "Return Item." Follow the prompts to generate a prepaid return shipping label. Refunds are processed within 5-7 business days after we receive the item.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="account" style="margin-bottom:60px;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+                        <span style="width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </span>
+                        Account & Profile
+                    </h2>
+                    <div class="faq-group" style="display:flex;flex-direction:column;gap:12px;">
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">How do I create an account?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Click "Sign In" at the top of the page, then select "Create Account." Fill in your name, email, and password. You can also sign up with Google or Facebook for faster registration.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">I forgot my password. What should I do?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Click "Sign In," then "Forgot Password." Enter your email address and we'll send you a secure link to reset your password. The link expires after 24 hours.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="warranty" style="margin-bottom:40px;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+                        <span style="width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </span>
+                        Warranty & Repairs
+                    </h2>
+                    <div class="faq-group" style="display:flex;flex-direction:column;gap:12px;">
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">What warranty do you provide?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    All watches come with a minimum 2-year manufacturer's warranty. Premium brands include up to 5 years of warranty coverage. The warranty covers manufacturing defects but not damage from misuse, accidents, or unauthorized repairs.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-header" style="padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+                                <span style="font-weight:600;color:var(--text-primary);font-size:1.05rem;">How do I service or repair my watch?</span>
+                                <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transition:transform 0.35s;"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                            <div class="faq-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s;opacity:0;">
+                                <div style="padding:0 20px 20px;color:var(--text-secondary);line-height:1.8;border-top:1px solid rgba(0,0,0,0.08);">
+                                    Contact our support team with your order number and a description of the issue. We'll arrange for free pickup and delivery of your watch at an authorized service center. Most repairs are completed within 2-4 weeks.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="padding:60px 0;background:var(--accent);" id="contact">
+    <div class="container" style="text-align:center;">
+        <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:16px;">Still have questions?</h2>
+        <p style="color:rgba(255,255,255,0.85);font-size:1.05rem;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto;">Our support team is available Monday to Friday, 9AM to 6PM. We typically respond within 24 hours.</p>
+        <a asp-controller="Contact" asp-action="Index" style="padding:14px 32px;background:#fff;color:var(--accent);border-radius:8px;font-weight:600;font-size:1rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.25s;box-shadow:0 4px 20px rgba(0,0,0,0.15);">
+            Contact Us
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </a>
+    </div>
+</section>
+
+@section Scripts {
+<style>
+.faq-item {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.faq-item.is-open .faq-arrow {
+    transform: rotate(180deg);
+}
+.faq-item.is-open .faq-header span {
+    color: var(--accent);
+}
+#contact a:hover {
+    background: var(--accent) !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25) !important;
+}
+</style>
+<script>
+function toggleFaq(el) {
+    var item = el.closest('.faq-item');
+    var body = item.querySelector('.faq-body');
+    var inner = body.querySelector('div');
+
+    if (item.classList.contains('is-open')) {
+        var h = inner.scrollHeight;
+        body.style.maxHeight = h + 'px';
+        requestAnimationFrame(function() {
+            body.style.maxHeight = '0';
+            body.style.opacity = '0';
+        });
+        item.classList.remove('is-open');
+    } else {
+        item.classList.add('is-open');
+        body.style.maxHeight = inner.scrollHeight + 'px';
+        body.style.opacity = '1';
+    }
+}
+</script>
+}

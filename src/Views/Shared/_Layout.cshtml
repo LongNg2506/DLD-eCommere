@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DLD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MyProject.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-inner">
+
+                <!-- Left: Logo -->
+                <a class="header-logo" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/Logo-DLD-Light.png" alt="DLD" class="logo-light site-logo" />
+                    <img src="~/images/Logo-DLD-Dark.png" alt="DLD" class="logo-dark site-logo" />
+                </a>
+
+                <!-- Center: Nav Links -->
+                <nav class="header-nav" aria-label="Main navigation">
+                    <a class="header-nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="header-nav-link" asp-controller="Shop" asp-action="Index">Shop</a>
+                    <a class="header-nav-link" asp-controller="Gallery" asp-action="Index">Gallery</a>
+                    <a class="header-nav-link" asp-controller="About" asp-action="Index">About</a>
+                    <a class="header-nav-link" asp-controller="Help" asp-action="Index">Help</a>
+                    <a class="header-nav-link" asp-controller="Contact" asp-action="Index">Contact</a>
+                </nav>
+
+                <!-- Right: Icons -->
+                <div class="header-actions">
+
+                    <!-- Search -->
+                    <div class="header-search-wrap" id="headerSearchWrap">
+                        <button class="header-icon-btn" id="searchToggle" title="Search" aria-label="Search">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2.5" stroke-linecap="round">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="M21 21l-4.35-4.35" />
+                            </svg>
+                        </button>
+                        <div class="header-search-panel" id="headerSearchPanel">
+                            <form asp-controller="Home" asp-action="Search" method="get" class="header-search-form">
+                                <input type="text" name="q" placeholder="Search products..."
+                                       aria-label="Search products" class="header-search-input" />
+                                <button type="submit" class="header-search-submit" aria-label="Submit search">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2.5" stroke-linecap="round">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <path d="M21 21l-4.35-4.35" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Sign In / User Dropdown -->
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="header-dropdown">
+                            <button class="header-icon-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false" title="Account" aria-label="Account">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-user-info">
+                                    <strong>@User.Identity.Name</strong>
+                                    <span
+                                    class="dropdown-user-role">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                    My Profile
+                                </a></li>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                             stroke-width="2" stroke-linecap="round">
+                                            <rect x="3" y="3" width="7" height="7" />
+                                            <rect x="14" y="3" width="7" height="7" />
+                                            <rect x="14" y="14" width="7" height="7" />
+                                            <rect x="3" y="14" width="7" height="7" />
+                                        </svg>
+                                        Admin Dashboard
+                                    </a></li>
+                                }
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item dropdown-item-logout">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                                <polyline points="16 17 21 12 16 7" />
+                                                <line x1="21" y1="12" x2="9" y2="12" />
+                                            </svg>
+                                            Sign Out
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="header-icon-btn" title="Sign In"
+                               aria-label="Sign In">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                <polyline points="10 17 15 12 10 7" />
+                                <line x1="15" y1="12" x2="3" y2="12" />
+                            </svg>
+                        </a>
+                    }
+
+                    <!-- Cart -->
+                    <button class="header-icon-btn" id="cartBtn" title="Shopping Cart" aria-label="Open shopping cart" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
+                        <span class="header-cart-badge" id="cartBadge">0</span>
+                    </button>
+
+                    <!-- Theme Toggle -->
+                    <button class="header-icon-btn" id="themeToggle" title="Toggle theme"
+                            aria-label="Toggle light/dark theme">
+                        <svg id="themeIconLight" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5" />
+                            <line x1="12" y1="1" x2="12" y2="3" />
+                            <line x1="12" y1="21" x2="12" y2="23" />
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                            <line x1="1" y1="12" x2="3" y2="12" />
+                            <line x1="21" y1="12" x2="23" y2="12" />
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                        </svg>
+                        <svg id="themeIconDark" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             style="display:none">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </button>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="header-mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round">
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <nav class="header-mobile-nav" id="headerMobileNav" aria-label="Mobile navigation">
+                <a class="header-mobile-nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                <a class="header-mobile-nav-link" asp-controller="Shop" asp-action="Index">Shop</a>
+                <a class="header-mobile-nav-link" asp-controller="Gallery" asp-action="Index">Gallery</a>
+                <a class="header-mobile-nav-link" asp-controller="About" asp-action="Index">About</a>
+                <a class="header-mobile-nav-link" asp-controller="Help" asp-action="Index">Help</a>
+                <a class="header-mobile-nav-link" asp-controller="Contact" asp-action="Index">Contact</a>
+                <div class="header-mobile-search">
+                    <form asp-controller="Home" asp-action="Search" method="get">
+                        <input type="text" name="q" placeholder="Search products..." aria-label="Search" />
+                        <button type="submit">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2.5" stroke-linecap="round">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="M21 21l-4.35-4.35" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a class="header-mobile-nav-link" asp-controller="Account" asp-action="Profile">My Profile</a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                    {
+                        <a class="header-mobile-nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin
+                            Dashboard</a>
+                        }
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="header-mobile-nav-link"
+                                    style="background:none;border:none;cursor:pointer;font-family:inherit;text-align:left">Sign
+                                Out</button>
+                            </form>
+                        }
+                else
+                        {
+                            <a class="header-mobile-nav-link" asp-controller="Account" asp-action="Login">Sign In</a>
+                            <a class="header-mobile-nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                        }
+                    </nav>
+                </div>
+            </header>
+
+            <div class="site-main">
+                <main>
+                    @RenderBody()
+                </main>
+            </div>
+
+            <footer class="footer text-muted">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-6">
+                            <h4>
+                                <img src="~/images/Logo-DLD-Light.png" alt="DLD" class="logo-light"
+                                     style="height:40px;width:100%;max-width:140px;display:inline-block;vertical-align:middle;object-fit:contain;" />
+                                <img src="~/images/Logo-DLD-Dark.png" alt="DLD" class="logo-dark"
+                                     style="height:40px;width:100%;max-width:140px;display:inline-block;vertical-align:middle;object-fit:contain;" />
+                            </h4>
+                            <p style="margin-top:12px;font-size:0.88rem;line-height:1.7">
+                                Your trusted destination for premium timepieces. Discover watches that define your style and
+                                tell your story.
+                            </p>
+                            <div class="footer-social d-flex gap-2 mt-3">
+                                <a href="#" aria-label="Facebook">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                                    </svg>
+                                </a>
+                                <a href="#" aria-label="Twitter">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+                                    </svg>
+                                </a>
+                                <a href="#" aria-label="Instagram">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <h5>Shop</h5>
+                            <ul class="list-unstyled d-flex flex-column gap-2">
+                                <li><a href="#">New Arrivals</a></li>
+                                <li><a href="#">Best Sellers</a></li>
+                                <li><a href="#">Flash Deals</a></li>
+                                <li><a href="#">Gift Cards</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <h5>Support</h5>
+                            <ul class="list-unstyled d-flex flex-column gap-2">
+                                <li><a asp-controller="Help" asp-action="Index">Help Center</a></li>
+                                <li><a href="#">Shipping Info</a></li>
+                                <li><a href="#">Returns</a></li>
+                                <li><a href="#">Size Guide</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <h5>Company</h5>
+                            <ul class="list-unstyled d-flex flex-column gap-2">
+                                <li><a asp-controller="About" asp-action="Index">About Us</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Press</a></li>
+                                <li><a href="#">Blog</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <h5>Legal</h5>
+                            <ul class="list-unstyled d-flex flex-column gap-2">
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms of Service</a></li>
+                                <li><a href="#">Cookie Policy</a></li>
+                                <li><a asp-controller="Contact" asp-action="Index">Contact Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="footer-bottom text-center">
+                        <p class="mb-0">&copy; 2026 DLD. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- Cart Drawer -->
+            <div class="cart-overlay" id="cartOverlay"></div>
+            <div class="cart-drawer" id="cartDrawer">
+                <div class="cart-header">
+                    <h3>Shopping Cart (<span id="cartItemCount">0</span>)</h3>
+                    <button class="cart-close" id="cartClose" aria-label="Close cart">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="cart-body" id="cartBody">
+                    <div class="cart-empty" id="cartEmpty">
+                        <span class="empty-icon">
+                            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1" />
+                                <circle cx="20" cy="21" r="1" />
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                            </svg>
+                        </span>
+                        <p>Your cart is empty.<br />Start shopping to add items.</p>
+                    </div>
+                    <div id="cartItemsList"></div>
+                </div>
+                <div class="cart-footer" id="cartFooter" style="display:none">
+                    <div class="cart-total">
+                        <span class="cart-total-label">Total</span>
+                        <span class="cart-total-value" id="cartTotal">$0.00</span>
+                    </div>
+                    <button class="cart-checkout-btn" onclick="goToCheckout()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick View Modal -->
+            <div class="qv-overlay" id="qvOverlay" onclick="closeQuickView(event)">
+                <div class="qv-modal" id="qvModal" onclick="event.stopPropagation()">
+                    <button class="qv-close" onclick="closeQuickView()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                    <div class="qv-inner">
+                        <div class="qv-image">
+                            <img id="qvImg" src="" alt="" />
+                        </div>
+                        <div class="qv-content">
+                            <span class="qv-collection" id="qvCollection"></span>
+                            <h2 class="qv-name" id="qvName"></h2>
+                            <div class="qv-rating">
+                                <span class="stars">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#ffc107" stroke="#ffc107"
+                                         stroke-width="2">
+                                        <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#ffc107" stroke="#ffc107"
+                                         stroke-width="2">
+                                        <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#ffc107" stroke="#ffc107"
+                                         stroke-width="2">
+                                        <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#ffc107" stroke="#ffc107"
+                                         stroke-width="2">
+                                        <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffc107"
+                                         stroke-width="2">
+                                        <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </span>
+                                <span class="qv-review-count">(128 reviews)</span>
+                            </div>
+                            <div class="qv-price" id="qvPrice"></div>
+                            <p class="qv-desc" id="qvDesc"></p>
+                            <div class="qv-features">
+                                <div class="qv-feature-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2.5" stroke-linecap="round">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    <span id="qvFeature1"></span>
+                                </div>
+                                <div class="qv-feature-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2.5" stroke-linecap="round">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    <span id="qvFeature2"></span>
+                                </div>
+                                <div class="qv-feature-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2.5" stroke-linecap="round">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    <span id="qvFeature3"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Container -->
+            <div class="toast-container" id="toastContainer"></div>
+
+            <!-- Cart API URLs (injected by Razor) -->
+            <div id="cartUrls"
+                 data-add-url="@Url.Action("AddItem", "Cart")"
+                 data-remove-url="@Url.Action("RemoveItem", "Cart")"
+                 data-update-url="@Url.Action("UpdateQuantity", "Cart")"
+                 data-count-url="@Url.Action("GetCartCount", "Cart")"
+                 data-partial-url="@Url.Action("GetCartPartial", "Cart")"
+                 style="display:none"></div>
+
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+            @await RenderSectionAsync("Scripts", required: false)
+        </body>
+
+    </html>

@@ -1,0 +1,40 @@
+@model MyProject.Areas.Admin.ViewModels.CategoryAdminFormViewModel
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Edit Category</h1>
+    </div>
+</div>
+
+<form asp-action="Edit" method="post" class="admin-form">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div class="admin-form-grid">
+        <div class="admin-form-card">
+            <div class="admin-form-card-header">
+                <h3>Category Information</h3>
+            </div>
+            <div class="admin-form-card-body">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Category Name <span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="admin-form-control" placeholder="Enter category name..." />
+                    <span asp-validation-for="Name" class="admin-form-error"></span>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Description</label>
+                    <textarea asp-for="Description" class="admin-form-control admin-form-textarea" rows="4" placeholder="Enter description (optional)..."></textarea>
+                </div>
+            </div>
+            <div class="admin-form-card-footer">
+                <button type="submit" class="admin-btn admin-btn-primary">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Save Changes
+                </button>
+                <a asp-action="Index" class="admin-btn">Back</a>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,126 @@
+@model MyProject.Areas.Admin.ViewModels.OrderAdminIndexViewModel
+@{
+    ViewData["Title"] = "Order Management";
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Order Management</h1>
+        <p class="admin-page-subtitle">@Model.TotalCount orders</p>
+    </div>
+</div>
+
+<form method="get" class="admin-filter-bar">
+    <input type="text" name="keyword" value="@Model.SearchKeyword" placeholder="Search customer, email..." class="admin-filter-input" />
+    <select name="status" class="admin-filter-select">
+        <option value="">-- All Status --</option>
+        <option value="Pending" selected="@(Model.FilterStatus == "Pending")">Pending</option>
+        <option value="Confirmed" selected="@(Model.FilterStatus == "Confirmed")">Confirmed</option>
+        <option value="Shipped" selected="@(Model.FilterStatus == "Shipped")">Shipping</option>
+        <option value="Delivered" selected="@(Model.FilterStatus == "Delivered")">Delivered</option>
+        <option value="Cancelled" selected="@(Model.FilterStatus == "Cancelled")">Cancelled</option>
+    </select>
+    <button type="submit" class="admin-btn admin-btn-primary">Filter</button>
+    <a asp-action="Index" class="admin-btn">Reset</a>
+</form>
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.TotalCount</div>
+        <div class="admin-stat-label">Total Orders</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-warning">
+        <div class="admin-stat-value">@Model.PendingCount</div>
+        <div class="admin-stat-label">Pending</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.ConfirmedCount</div>
+        <div class="admin-stat-label">Confirmed</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.ShippedCount</div>
+        <div class="admin-stat-label">Shipping</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-success">
+        <div class="admin-stat-value">@Model.DeliveredCount</div>
+        <div class="admin-stat-label">Delivered</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-danger">
+        <div class="admin-stat-value">@Model.CancelledCount</div>
+        <div class="admin-stat-label">Cancelled</div>
+    </div>
+</div>
+
+<div class="admin-table-card">
+    <div class="admin-table-header">
+        <h3 class="admin-table-title">Order List (@Model.Orders.Count)</h3>
+    </div>
+    <div class="admin-table-wrapper">
+        @if (!Model.Orders.Any())
+        {
+            <div class="admin-empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <p>No orders found.</p>
+            </div>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Order Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Shipping Address</th>
+                        <th style="width:100px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model.Orders)
+                    {
+                        <tr>
+                            <td class="admin-table-muted">#@o.Id</td>
+                            <td>
+                                <div class="admin-table-name">@o.CustomerName</div>
+                                <div class="admin-table-meta">@o.CustomerEmail</div>
+                            </td>
+                            <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="admin-table-price-sale">@o.TotalAmount.ToString("N0")</td>
+                            <td>
+                                <span class="admin-badge @GetOrderBadgeClass(o.Status)">@GetOrderStatusText(o.Status)</span>
+                            </td>
+                            <td class="admin-table-muted" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@(o.ShippingAddress ?? "-")</td>
+                            <td>
+                                <a asp-area="Admin" asp-action="Details" asp-route-id="@o.Id" class="admin-btn admin-btn-sm admin-btn-info">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetOrderBadgeClass(string status) => status switch
+    {
+        "Pending" => "admin-badge-warning",
+        "Confirmed" => "admin-badge-info",
+        "Shipped" => "admin-badge-info",
+        "Delivered" => "admin-badge-success",
+        "Cancelled" => "admin-badge-danger",
+        _ => "admin-badge-info"
+    };
+
+    string GetOrderStatusText(string status) => status switch
+    {
+        "Pending" => "Pending",
+        "Confirmed" => "Confirmed",
+        "Shipped" => "Shipping",
+        "Delivered" => "Delivered",
+        "Cancelled" => "Cancelled",
+        _ => status
+    };
+}

@@ -1,0 +1,107 @@
+@using MyProject.DTOs.Products
+@model ProductListItemDto
+
+<div class="product-card fade-in-up">
+    <div class="product-image-wrap">
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="@Model.Name" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+            <div class="product-placeholder-img" style="display:none">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6V12L16 14"/>
+                </svg>
+            </div>
+        }
+        else
+        {
+            <div class="product-placeholder-img">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6V12L16 14"/>
+                </svg>
+            </div>
+        }
+
+        <div class="product-badges">
+            @if (Model.Discount > 0)
+            {
+                <span class="badge-pill badge-sale">-@Model.Discount%</span>
+            }
+            @if (Model.CreatedAt > DateTime.Now.AddDays(-7))
+            {
+                <span class="badge-pill badge-new">New</span>
+            }
+            @if (Model.StockQuantity <= 5 && Model.StockQuantity > 0)
+            {
+                <span class="badge-pill badge-hot">Only @Model.StockQuantity left</span>
+            }
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-action-btn wishlist" title="Add to Wishlist" aria-label="Add to wishlist">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+            </button>
+            <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="@Model.Id" class="quick-action-btn" title="Quick View" aria-label="View product details">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </a>
+        </div>
+
+        @if (Model.StockQuantity == 0)
+        {
+            <div class="badge-stock">Out of Stock</div>
+        }
+    </div>
+
+    <div class="product-info">
+        @if (!string.IsNullOrWhiteSpace(Model.CategoryName))
+        {
+            <div class="product-category">@Model.CategoryName</div>
+        }
+        <div class="product-name">
+            <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="@Model.Id">@Model.Name</a>
+        </div>
+        <div class="product-rating">
+            <div class="stars">
+                @for (int i = 0; i < 5; i++)
+                {
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="@(i < 4 ? "#ffc107" : "none")" stroke="#ffc107" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                }
+            </div>
+            <span class="rating-count">(128)</span>
+        </div>
+        <div class="product-price">
+            <span class="price-current">$@Model.SalePrice.ToString("N2")</span>
+            @if (Model.Discount > 0)
+            {
+                <span class="price-original">$@Model.Price.ToString("N2")</span>
+                <span class="price-discount">-@Model.Discount%</span>
+            }
+        </div>
+    </div>
+
+    @if (Model.StockQuantity > 0)
+    {
+        <button class="add-to-cart-btn" onclick="addToCart(@Model.Id, '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(Model.Name))', @Model.SalePrice, @Model.Price, @Model.Discount)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            Add to Cart
+        </button>
+    }
+    else
+    {
+        <div class="add-to-cart-btn" style="background:var(--text-muted);cursor:not-allowed;justify-content:center">
+            Out of Stock
+        </div>
+    }
+</div>

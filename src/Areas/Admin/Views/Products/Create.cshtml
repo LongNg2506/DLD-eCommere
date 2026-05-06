@@ -1,0 +1,105 @@
+@model MyProject.Areas.Admin.ViewModels.ProductAdminFormViewModel
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Add New Product</h1>
+    </div>
+</div>
+
+<form asp-action="Create" method="post" class="admin-form" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="admin-form-grid">
+        <div class="admin-form-card">
+            <div class="admin-form-card-header">
+                <h3>Product Information</h3>
+            </div>
+            <div class="admin-form-card-body">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Product Name <span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="admin-form-control" placeholder="Enter product name..." />
+                    <span asp-validation-for="Name" class="admin-form-error"></span>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Price ($) <span class="text-danger">*</span></label>
+                        <input asp-for="Price" class="admin-form-control" type="number" step="1000" min="0" placeholder="0" />
+                        <span asp-validation-for="Price" class="admin-form-error"></span>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Discount (%)</label>
+                        <input asp-for="Discount" class="admin-form-control" type="number" min="0" max="100" placeholder="0" />
+                        <span asp-validation-for="Discount" class="admin-form-error"></span>
+                    </div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Stock Quantity</label>
+                        <input asp-for="StockQuantity" class="admin-form-control" type="number" min="0" placeholder="0" />
+                        <span asp-validation-for="StockQuantity" class="admin-form-error"></span>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Category <span class="text-danger">*</span></label>
+                        <select asp-for="CategoryId" class="admin-form-select">
+                            <option value="">-- Select category --</option>
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <option value="@cat.Id">@cat.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CategoryId" class="admin-form-error"></span>
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Description</label>
+                    <textarea asp-for="Description" class="admin-form-control admin-form-textarea" rows="4" placeholder="Enter description..."></textarea>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">
+                        <input asp-for="IsActive" type="checkbox" class="admin-form-checkbox" />
+                        Active
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-form-card">
+            <div class="admin-form-card-header">
+                <h3>Images</h3>
+            </div>
+            <div class="admin-form-card-body">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Main Image URL</label>
+                    <input asp-for="ImageUrl" class="admin-form-control" placeholder="https://..." />
+                    <span asp-validation-for="ImageUrl" class="admin-form-error"></span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div style="margin-bottom:16px;">
+                        <img src="@Model.ImageUrl" alt="Preview" style="max-width:100%;max-height:200px;object-fit:cover;border-radius:8px;" />
+                    </div>
+                }
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Collection Image URLs (comma-separated)</label>
+                    <input asp-for="GalleryImages" class="admin-form-control" placeholder="url1, url2, url3" />
+                </div>
+            </div>
+
+            <div class="admin-form-card-footer">
+                <button type="submit" class="admin-btn admin-btn-primary">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Save Product
+                </button>
+                <a asp-action="Index" class="admin-btn">Back</a>
+            </div>
+        </div>
+    </div>
+</form>

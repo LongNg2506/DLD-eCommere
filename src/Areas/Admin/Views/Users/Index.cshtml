@@ -1,0 +1,100 @@
+@model MyProject.Areas.Admin.ViewModels.UserAdminIndexViewModel
+@{
+    ViewData["Title"] = "Customer Management";
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Customer Management</h1>
+        <p class="admin-page-subtitle">@Model.TotalCount accounts</p>
+    </div>
+</div>
+
+<form method="get" class="admin-filter-bar">
+    <input type="text" name="keyword" value="@Model.SearchKeyword" placeholder="Search name, email..." class="admin-filter-input" />
+    <select name="role" class="admin-filter-select">
+        <option value="">-- All Roles --</option>
+        <option value="Admin" selected="@(Model.FilterRole == "Admin")">Admin</option>
+        <option value="Staff" selected="@(Model.FilterRole == "Staff")">Staff</option>
+        <option value="Customer" selected="@(Model.FilterRole == "Customer")">Customer</option>
+    </select>
+    <select name="isActive" class="admin-filter-select">
+        <option value="">-- Status --</option>
+        <option value="true" selected="@(Model.FilterIsActive == true)">Active</option>
+        <option value="false" selected="@(Model.FilterIsActive == false)">Locked</option>
+    </select>
+    <button type="submit" class="admin-btn admin-btn-primary">Filter</button>
+    <a asp-action="Index" class="admin-btn">Reset</a>
+</form>
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.TotalCount</div>
+        <div class="admin-stat-label">Total Accounts</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-success">
+        <div class="admin-stat-value">@Model.ActiveCount</div>
+        <div class="admin-stat-label">Active</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-danger">
+        <div class="admin-stat-value">@Model.InactiveCount</div>
+        <div class="admin-stat-label">Locked</div>
+    </div>
+</div>
+
+<div class="admin-table-card">
+    <div class="admin-table-header">
+        <h3 class="admin-table-title">Account List (@Model.Users.Count)</h3>
+    </div>
+    <div class="admin-table-wrapper">
+        @if (!Model.Users.Any())
+        {
+            <div class="admin-empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <p>No accounts found.</p>
+            </div>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                        <th style="width:100px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model.Users)
+                    {
+                        <tr>
+                            <td>
+                                <div class="admin-table-name">@u.FullName</div>
+                            </td>
+                            <td>@u.Email</td>
+                            <td class="admin-table-muted">@(u.Phone ?? "-")</td>
+                            <td>
+                                <span class="admin-badge @(u.Role == "Admin" ? "admin-badge-danger" : u.Role == "Staff" ? "admin-badge-warning" : "admin-badge-info")">
+                                    @u.Role
+                                </span>
+                            </td>
+                            <td>
+                                <span class="admin-badge @(u.IsActive ? "admin-badge-success" : "admin-badge-danger")">
+                                    @(u.IsActive ? "Active" : "Locked")
+                                </span>
+                            </td>
+                            <td>@u.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <a asp-area="Admin" asp-action="Edit" asp-route-id="@u.Id" class="admin-btn admin-btn-sm admin-btn-info">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

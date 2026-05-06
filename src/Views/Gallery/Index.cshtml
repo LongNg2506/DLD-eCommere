@@ -1,0 +1,330 @@
+@{
+    ViewData["Title"] = "Gallery";
+}
+
+<!-- ================================================
+     HERO GALLERY
+     ================================================ -->
+<section class="gallery-hero">
+    <div class="gallery-hero-media">
+        <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=1600&q=85" alt="Premium Watch Collection" class="gallery-hero-img" />
+        <div class="gallery-hero-overlay"></div>
+    </div>
+    <div class="container">
+        <div class="gallery-hero-content">
+            <span class="gallery-hero-tag">2026 Collection</span>
+            <h1 class="gallery-hero-title">Time,<br />Peak Style</h1>
+            <p class="gallery-hero-desc">
+                Every moment deserves an outstanding timepiece.
+                Discover our curated collection of premium watches.
+            </p>
+            <div class="gallery-hero-cta">
+                <a href="@Url.Action("Index", "Shop")" class="gallery-cta-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    Explore Collection
+                </a>
+                <a href="@Url.Action("Index", "Shop")" class="gallery-cta-secondary">
+                    Shop Now
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="gallery-hero-scroll-hint">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+</section>
+
+<!-- ================================================
+     FEATURED COLLECTIONS
+     ================================================ -->
+<section class="section-padding gallery-collections">
+    <div class="container">
+        <div class="section-header-centered">
+            <span class="section-tag">Featured Collections</span>
+            <h2 class="section-title">Explore by Season</h2>
+            <p class="section-subtitle">Each season brings its own style — find the perfect watch for you</p>
+        </div>
+        <div class="gallery-col-grid">
+
+            <!-- Summer -->
+            <div class="gallery-col-card" onclick="location.href='@Url.Action("Index", "Shop")?categories=2'">
+                <div class="gallery-col-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=800&q=80" alt="Summer Collection" loading="lazy" />
+                    <div class="gallery-col-overlay">
+                        <div class="gallery-col-info">
+                            <span class="gallery-col-season">Summer</span>
+                            <h3 class="gallery-col-name">Summer Collection</h3>
+                            <p class="gallery-col-tagline">Light, fresh, free-spirited</p>
+                            <a href="@Url.Action("Index", "Shop")?categories=2" class="gallery-col-action">
+                                View Details
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Winter -->
+            <div class="gallery-col-card" onclick="location.href='@Url.Action("Index", "Shop")?categories=1'">
+                <div class="gallery-col-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80" alt="Winter Collection" loading="lazy" />
+                    <div class="gallery-col-overlay">
+                        <div class="gallery-col-info">
+                            <span class="gallery-col-season">Winter</span>
+                            <h3 class="gallery-col-name">Winter Collection</h3>
+                            <p class="gallery-col-tagline">Luxurious, warm, prestigious</p>
+                            <a href="@Url.Action("Index", "Shop")?categories=1" class="gallery-col-action">
+                                View Details
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Autumn -->
+            <div class="gallery-col-card" onclick="location.href='@Url.Action("Index", "Shop")'">
+                <div class="gallery-col-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=800&q=80" alt="Autumn Collection" loading="lazy" />
+                    <div class="gallery-col-overlay">
+                        <div class="gallery-col-info">
+                            <span class="gallery-col-season">Autumn</span>
+                            <h3 class="gallery-col-name">Autumn Collection</h3>
+                            <p class="gallery-col-tagline">Classic, serene, elegant</p>
+                            <a href="@Url.Action("Index", "Shop")" class="gallery-col-action">
+                                View Details
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spring -->
+            <div class="gallery-col-card" onclick="location.href='@Url.Action("Index", "Shop")?categories=3'">
+                <div class="gallery-col-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&q=80" alt="Spring Collection" loading="lazy" />
+                    <div class="gallery-col-overlay">
+                        <div class="gallery-col-info">
+                            <span class="gallery-col-season">Spring</span>
+                            <h3 class="gallery-col-name">Spring Collection</h3>
+                            <p class="gallery-col-tagline">Vibrant, fresh, full of life</p>
+                            <a href="@Url.Action("Index", "Shop")?categories=3" class="gallery-col-action">
+                                View Details
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ================================================
+     WATCH SHOWCASE GRID (Hover Effects)
+     ================================================ -->
+<section class="section-padding gallery-showcase">
+    <div class="container">
+        <div class="section-header-centered">
+            <span class="section-tag">Featured</span>
+            <h2 class="section-title">Watches Worth Noting</h2>
+            <p class="section-subtitle">Hover to explore each masterpiece</p>
+        </div>
+        <div class="gallery-showcase-grid">
+
+            <div class="gallery-showcase-card">
+                <div class="gallery-showcase-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600&q=80" alt="Citizen Eco-Drive" loading="lazy" />
+                    <div class="gallery-showcase-overlay">
+                        <div class="gallery-showcase-content">
+                            <span class="gallery-showcase-collection">Men's Watch</span>
+                            <h3 class="gallery-showcase-name">Citizen Eco-Drive</h3>
+                            <p class="gallery-showcase-desc">Light-powered battery — Built for every journey</p>
+                            <div class="gallery-showcase-actions">
+                                <button class="gallery-btn-quick" onclick="openQuickView(1, 'Citizen Eco-Drive', 'Men\'s Watch', 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600&q=80', 'Light-powered battery, 100m water resistance, premium stainless steel strap.', 'Eco-Drive — Light-Powered Battery', '100m Water Resistance', '3-Year Official Warranty')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Quick View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-showcase-card">
+                <div class="gallery-showcase-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&q=80" alt="Seiko 5" loading="lazy" />
+                    <div class="gallery-showcase-overlay">
+                        <div class="gallery-showcase-content">
+                            <span class="gallery-showcase-collection">Men's Watch</span>
+                            <h3 class="gallery-showcase-name">Seiko 5</h3>
+                            <p class="gallery-showcase-desc">Automatic movement — Japanese craftsmanship at its finest</p>
+                            <div class="gallery-showcase-actions">
+                                <button class="gallery-btn-quick" onclick="openQuickView(2, 'Seiko 5', 'Men\'s Watch', 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&q=80', 'Japanese automatic movement watch, self-winding movement, sleek sporty design.', 'Automatic Movement — Japanese Engineering', 'Scratch-Resistant Hardlex Glass', '2-Year Official Warranty')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Quick View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-showcase-card">
+                <div class="gallery-showcase-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=600&q=80" alt="Casio Sheen" loading="lazy" />
+                    <div class="gallery-showcase-overlay">
+                        <div class="gallery-showcase-content">
+                            <span class="gallery-showcase-collection">Women's Watch</span>
+                            <h3 class="gallery-showcase-name">Casio Sheen</h3>
+                            <p class="gallery-showcase-desc">Sapphire crystal — Radiant beauty</p>
+                            <div class="gallery-showcase-actions">
+                                <button class="gallery-btn-quick" onclick="openQuickView(3, 'Casio Sheen', 'Women\'s Watch', 'https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=600&q=80', 'Casio Sheen women\'s watch with scratch-resistant sapphire crystal, slim elegant design perfect for modern style.', 'Scratch-Resistant Sapphire Crystal', 'Feminine Slim Design', '3-Year Battery — Energy Efficient')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Quick View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-showcase-card">
+                <div class="gallery-showcase-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=600&q=80" alt="Olym Pianus Couple" loading="lazy" />
+                    <div class="gallery-showcase-overlay">
+                        <div class="gallery-showcase-content">
+                            <span class="gallery-showcase-collection">Couple's Watch</span>
+                            <h3 class="gallery-showcase-name">Olym Pianus Couple</h3>
+                            <p class="gallery-showcase-desc">Premium leather strap — Symbol of pairs</p>
+                            <div class="gallery-showcase-actions">
+                                <button class="gallery-btn-quick" onclick="openQuickView(4, 'Olym Pianus Couple', 'Couple\'s Watch', 'https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=600&q=80', 'Olym Pianus couple watch set with premium leather strap, perfect matching design for couples who love fashion.', 'Matching Design — Perfect Pair', 'Premium Genuine Leather Strap', 'Ideal Gift for Special Occasions')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Quick View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-showcase-card">
+                <div class="gallery-showcase-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=600&q=80" alt="Tissot PRX" loading="lazy" />
+                    <div class="gallery-showcase-overlay">
+                        <div class="gallery-showcase-content">
+                            <span class="gallery-showcase-collection">Men's Watch</span>
+                            <h3 class="gallery-showcase-name">Tissot PRX</h3>
+                            <p class="gallery-showcase-desc">Luxurious design — Swiss prestige</p>
+                            <div class="gallery-showcase-actions">
+                                <button class="gallery-btn-quick" onclick="openQuickView(5, 'Tissot PRX', 'Men\'s Watch', 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=600&q=80', 'Tissot PRX with luxurious design, Swiss automatic movement, iconic square dial youthful and prestigious.', 'Swiss Automatic — High Precision', 'Scratch-Resistant Sapphire Crystal', '100m Water Resistance — Built to Last')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Quick View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-showcase-card">
+                <div class="gallery-showcase-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&q=80" alt="Omega Seamaster" loading="lazy" />
+                    <div class="gallery-showcase-overlay">
+                        <div class="gallery-showcase-content">
+                            <span class="gallery-showcase-collection">Men's Watch</span>
+                            <h3 class="gallery-showcase-name">Omega Seamaster</h3>
+                            <p class="gallery-showcase-desc">Iconic dive watch — King of the oceans</p>
+                            <div class="gallery-showcase-actions">
+                                <button class="gallery-btn-quick" onclick="openQuickView(13, 'Omega Seamaster', 'Men\'s Watch', 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&q=80', 'Omega Seamaster — legendary dive watch, symbol of James Bond, sapphire crystal, 300m water resistance.', 'Sapphire Crystal — Absolutely Scratch-Resistant', '300m Water Resistance — Legendary Dive Watch', 'Co-Axial Movement — Swiss Precision')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Quick View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="gallery-showcase-more">
+            <a href="@Url.Action("Index", "Shop")" class="gallery-cta-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                Explore All
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================
+     LIFESTYLE GALLERY
+     ================================================ -->
+<section class="gallery-lifestyle">
+    <div class="gallery-lifestyle-inner">
+        <div class="gallery-lifestyle-left">
+            <div class="gallery-lifestyle-top">
+                <div class="gallery-lifestyle-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=800&q=80" alt="Luxury Lifestyle" loading="lazy" />
+                    <div class="gallery-lifestyle-overlay"></div>
+                </div>
+            </div>
+            <div class="gallery-lifestyle-bottom">
+                <div class="gallery-lifestyle-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=800&q=80" alt="Elegant Lifestyle" loading="lazy" />
+                    <div class="gallery-lifestyle-overlay"></div>
+                </div>
+            </div>
+        </div>
+        <div class="gallery-lifestyle-right">
+            <div class="gallery-lifestyle-img-wrap">
+                <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?w=800&q=80" alt="Premium Lifestyle" loading="lazy" />
+                <div class="gallery-lifestyle-overlay"></div>
+            </div>
+        </div>
+    </div>
+    <div class="gallery-lifestyle-content">
+        <div class="container">
+            <div class="gallery-lifestyle-text">
+                <span class="gallery-hero-tag">Lifestyle</span>
+                <h2 class="gallery-lifestyle-title">Watches — Beyond Time</h2>
+                <p class="gallery-lifestyle-desc">
+                    Beyond a time-telling tool, a premium watch is a style statement,
+                    a reflection of aesthetic taste and refinement in every moment of life.
+                </p>
+                <a href="@Url.Action("Index", "Shop")" class="gallery-cta-primary">
+                    Explore Style
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================
+     CTA CUỐI TRANG
+     ================================================ -->
+<section class="gallery-cta-section">
+    <div class="container">
+        <div class="gallery-cta-inner">
+            <div class="gallery-cta-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 6V12L16 14"/>
+                </svg>
+            </div>
+            <h2 class="gallery-cta-title">Ready to Find Your Perfect Watch?</h2>
+            <p class="gallery-cta-desc">
+                Hundreds of premium watch models waiting for you to explore.
+                From classic to modern — there's always one that's right for you.
+            </p>
+            <div class="gallery-cta-buttons">
+                <a href="@Url.Action("Index", "Shop")" class="gallery-cta-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    Explore Collection
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

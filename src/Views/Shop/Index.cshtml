@@ -1,0 +1,402 @@
+@model MyProject.Controllers.ShopIndexViewModel
+
+@{
+    ViewData["Title"] = "Shop";
+}
+
+<!-- Shop Hero -->
+<section class="shop-hero">
+    <div class="container">
+        <div class="shop-hero-inner">
+            <h1 class="shop-hero-title">Our Collection</h1>
+            <p class="shop-hero-subtitle">Discover premium timepieces crafted for every moment</p>
+        </div>
+    </div>
+</section>
+
+<!-- Shop Content -->
+<section class="shop-content">
+    <div class="container">
+        <div class="shop-layout">
+
+            <!-- Sidebar Filters -->
+            <aside class="shop-sidebar" id="shopSidebar">
+                <div class="shop-sidebar-header">
+                    <h3>Filters</h3>
+                    <a href="@Url.Action("Index", "Shop")" class="shop-clear-btn @(Model.Result.TotalItems == 0 ? "" : "")">Clear all</a>
+                </div>
+
+                <!-- Categories -->
+                <div class="shop-filter-group">
+                    <h4 class="shop-filter-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        Categories
+                    </h4>
+                    <div class="shop-filter-options">
+                        @foreach (var cat in Model.Categories)
+                        {
+                                var isSelected = Model.Result.Filter.CategoryIds?.Contains(cat.Id) == true;
+                                <label class="shop-filter-checkbox @(isSelected ? "checked" : "")">
+                                    <input type="checkbox" name="categories" value="@cat.Id" @(isSelected ? "checked" : "") />
+                                    <span class="shop-checkbox-custom"></span>
+                                    <span class="shop-filter-label">@cat.Name</span>
+                                    <span class="shop-filter-count">(@cat.ProductCount)</span>
+                                </label>
+                        }
+                    </div>
+                </div>
+
+                <!-- Price Range -->
+                <div class="shop-filter-group" id="priceRangeGroup">
+                    <h4 class="shop-filter-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        Price Range
+                    </h4>
+                    <div class="shop-price-display">
+                        <span id="priceDisplayMin">$@((Model.Result.Filter.MinPrice ?? 0).ToString("N0"))</span>
+                        <span class="shop-price-sep">—</span>
+                        <span id="priceDisplayMax">$@((Model.Result.Filter.MaxPrice ?? (decimal)50000000).ToString("N0"))</span>
+                    </div>
+                    <div class="shop-range-slider" id="priceRangeSlider">
+                        <div class="shop-range-track"></div>
+                        <div class="shop-range-fill" id="priceRangeFill"></div>
+                        <input type="range" class="shop-range-input shop-range-min" id="rangeMin" min="0" max="50000000" step="500000" value="@(Model.Result.Filter.MinPrice ?? 0)" />
+                        <input type="range" class="shop-range-input shop-range-max" id="rangeMax" min="0" max="50000000" step="500000" value="@(Model.Result.Filter.MaxPrice ?? (decimal)50000000)" />
+                    </div>
+                </div>
+
+                <!-- Apply Button -->
+                <div class="shop-filter-group">
+                    <button class="shop-apply-btn" onclick="applyShopFilters()">Apply Filters</button>
+                </div>
+
+                <!-- Availability -->
+                <div class="shop-filter-group">
+                    <h4 class="shop-filter-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Availability
+                    </h4>
+                    <div class="shop-filter-options">
+                        <label class="shop-filter-checkbox checked">
+                            <input type="checkbox" checked disabled />
+                            <span class="shop-checkbox-custom"></span>
+                            <span class="shop-filter-label">In Stock</span>
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="shop-main">
+                <!-- Toolbar -->
+                <div class="shop-toolbar">
+                    <div class="shop-toolbar-left">
+                        <div class="shop-search-bar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                            <input type="text" id="shopSearchInput" class="shop-search-input" placeholder="Search products..." value="@Model.Result.Filter.Keyword" />
+                        </div>
+                        <p class="shop-results-count">@Model.Result.TotalItems product@(Model.Result.TotalItems != 1 ? "s" : "")</p>
+                    </div>
+                    <div class="shop-toolbar-right">
+                        <div class="shop-sort-wrap">
+                            <label for="sortSelect">Sort by:</label>
+                            <select id="sortSelect" class="shop-sort-select" onchange="applyShopFilters()">
+                                <option value="newest" selected="@(Model.Result.Filter.SortBy == "newest")">Newest First</option>
+                                <option value="price_asc" selected="@(Model.Result.Filter.SortBy == "price_asc")">Price: Low to High</option>
+                                <option value="price_desc" selected="@(Model.Result.Filter.SortBy == "price_desc")">Price: High to Low</option>
+                                <option value="name_asc" selected="@(Model.Result.Filter.SortBy == "name_asc")">Name: A-Z</option>
+                                <option value="oldest" selected="@(Model.Result.Filter.SortBy == "oldest")">Oldest First</option>
+                            </select>
+                        </div>
+                        <button class="shop-sidebar-toggle" id="sidebarToggle" aria-label="Toggle filters">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="6" y1="18" x2="18" y2="18"/>
+                            </svg>
+                            Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                @if (Model.Result.Products.Count == 0)
+                {
+                    <div class="shop-empty">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round">
+                            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                        </svg>
+                        <h3>No products found</h3>
+                        <p>Try adjusting your filters or search keyword</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="shop-product-grid" id="productGrid">
+                        @foreach (var product in Model.Result.Products)
+                        {
+                            <div class="product-card fade-in-up">
+                                <div class="product-image-wrap">
+                                    @if (product.Badge != "none")
+                                    {
+                                        <div class="product-badges">
+                                            @if (product.Badge == "sale")
+                                            {
+                                                <span class="badge-pill badge-sale">-@product.Discount%</span>
+                                            }
+                                            else if (product.Badge == "new")
+                                            {
+                                                <span class="badge-pill badge-new">New</span>
+                                            }
+                                            else if (product.Badge == "hot")
+                                            {
+                                                <span class="badge-pill badge-hot">Hot</span>
+                                            }
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name" loading="lazy"
+                                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                                        <div class="product-placeholder-img" style="display:none">
+                                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                                                <circle cx="12" cy="12" r="10"/><path d="M12 6V12L16 14"/>
+                                            </svg>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="product-placeholder-img">
+                                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                                                <circle cx="12" cy="12" r="10"/><path d="M12 6V12L16 14"/>
+                                            </svg>
+                                        </div>
+                                    }
+
+                                    <div class="quick-actions">
+                                        <button class="quick-action-btn wishlist" aria-label="Add to wishlist">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                        </button>
+                                        <a href="@Url.Action("ProductDetail", "Shop", new { id = product.Id })" class="quick-action-btn" aria-label="Quick view">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                        </a>
+                                    </div>
+
+                                    @if (product.StockQuantity <= 3 && product.StockQuantity > 0)
+                                    {
+                                        <span class="badge-stock low-stock">Only @product.StockQuantity left</span>
+                                    }
+                                    else if (product.StockQuantity == 0)
+                                    {
+                                        <span class="badge-stock">Out of Stock</span>
+                                    }
+                                </div>
+
+                                <div class="product-info">
+                                    <div class="product-category">@product.CategoryName</div>
+                                    <h3 class="product-name">
+                                        <a href="@Url.Action("ProductDetail", "Shop", new { id = product.Id })">@product.Name</a>
+                                    </h3>
+                                    <div class="product-rating">
+                                        <span class="stars">
+                                            @for (int i = 0; i < 5; i++)
+                                            {
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="@(i < 4 ? "#ffc107" : "none")" stroke="#ffc107" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                            }
+                                        </span>
+                                        <span class="rating-count">(128)</span>
+                                    </div>
+                                    <div class="product-price">
+                                        <span class="price-current">$@product.SalePrice.ToString("N0")</span>
+                                        @if (product.Discount > 0)
+                                        {
+                                            <span class="price-original">$@product.Price.ToString("N0")</span>
+                                            <span class="price-discount">-@product.Discount%</span>
+                                        }
+                                    </div>
+                                    @if (product.StockQuantity > 0)
+                                    {
+                                        <button class="add-to-cart-btn" onclick="addToCart(@product.Id, '@product.Name.Replace("'", "\\'")', @product.SalePrice, @product.Price, @product.Discount)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                                            Add to Cart
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="add-to-cart-btn" disabled>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                                            Out of Stock
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (Model.Result.TotalPages > 1)
+                    {
+                        <div class="shop-pagination">
+                            @if (Model.Result.CurrentPage > 1)
+                            {
+                                <a href="@BuildPageUrl(Model.Result.CurrentPage - 1)" class="shop-pagination-btn" aria-label="Previous page">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                                </a>
+                            }
+
+                            @{
+                                int start = Math.Max(1, Model.Result.CurrentPage - 2);
+                                int end = Math.Min(Model.Result.TotalPages, Model.Result.CurrentPage + 2);
+                                if (start > 1)
+                                {
+                                    <a href="@BuildPageUrl(1)" class="shop-pagination-btn">1</a>
+                                    if (start > 2)
+                                    {
+                                        <span class="shop-pagination-ellipsis">...</span>
+                                    }
+                                }
+                                for (int i = start; i <= end; i++)
+                                {
+                                    <a href="@BuildPageUrl(i)"
+                                       class="shop-pagination-btn @(i == Model.Result.CurrentPage ? "active" : "")">@i</a>
+                                }
+                                if (end < Model.Result.TotalPages)
+                                {
+                                    if (end < Model.Result.TotalPages - 1)
+                                    {
+                                        <span class="shop-pagination-ellipsis">...</span>
+                                    }
+                                    <a href="@BuildPageUrl(Model.Result.TotalPages)" class="shop-pagination-btn">@Model.Result.TotalPages</a>
+                                }
+                            }
+
+                            @if (Model.Result.CurrentPage < Model.Result.TotalPages)
+                            {
+                                <a href="@BuildPageUrl(Model.Result.CurrentPage + 1)" class="shop-pagination-btn" aria-label="Next page">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </a>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@{
+    string BuildPageUrl(int page)
+    {
+        var url = Url.Action("Index", "Shop");
+        var parts = new List<string>();
+        if (!string.IsNullOrEmpty(Model.Result.Filter.Keyword))
+            parts.Add($"q={Uri.EscapeDataString(Model.Result.Filter.Keyword)}");
+        if (Model.Result.Filter.CategoryIds?.Count > 0)
+            foreach (var c in Model.Result.Filter.CategoryIds)
+                parts.Add($"categories={c}");
+        if (Model.Result.Filter.MinPrice.HasValue)
+            parts.Add($"minPrice={Model.Result.Filter.MinPrice.Value}");
+        if (Model.Result.Filter.MaxPrice.HasValue)
+            parts.Add($"maxPrice={Model.Result.Filter.MaxPrice.Value}");
+        if (Model.Result.Filter.SortBy != "newest")
+            parts.Add($"sort={Model.Result.Filter.SortBy}");
+        parts.Add($"page={page}");
+        return url + "?" + string.Join("&", parts);
+    }
+}
+
+@section Scripts {
+    <script>
+        // ========================================
+        // DUAL-HANDLE PRICE RANGE SLIDER
+        // ========================================
+        const rangeMin = document.getElementById('rangeMin');
+        const rangeMax = document.getElementById('rangeMax');
+        const fill = document.getElementById('priceRangeFill');
+        const priceMinDisplay = document.getElementById('priceDisplayMin');
+        const priceMaxDisplay = document.getElementById('priceDisplayMax');
+
+        function formatPrice(val) {
+            return '$' + Number(val).toLocaleString('en-US');
+        }
+
+        function updateSlider() {
+            const minVal = parseInt(rangeMin.value);
+            const maxVal = parseInt(rangeMax.value);
+            const min = parseInt(rangeMin.min);
+            const max = parseInt(rangeMin.max);
+
+            if (minVal > maxVal - 500000) {
+                rangeMin.value = maxVal - 500000;
+            }
+
+            const left = ((rangeMin.value - min) / (max - min)) * 100;
+            const right = ((rangeMax.value - min) / (max - min)) * 100;
+
+            fill.style.left = left + '%';
+            fill.style.width = (right - left) + '%';
+
+            if (priceMinDisplay) priceMinDisplay.textContent = formatPrice(rangeMin.value);
+            if (priceMaxDisplay) priceMaxDisplay.textContent = formatPrice(rangeMax.value);
+        }
+
+        rangeMin?.addEventListener('input', updateSlider);
+        rangeMax?.addEventListener('input', updateSlider);
+
+        // Sync checkboxes with label classes
+        document.querySelectorAll('input[name="categories"]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                const label = cb.closest('.shop-filter-checkbox');
+                if (label) {
+                    label.classList.toggle('checked', cb.checked);
+                }
+            });
+        });
+
+        // ========================================
+        // FILTER URL BUILDING
+        // ========================================
+        function buildFilterUrl(page) {
+            const params = new URLSearchParams();
+            const q = document.getElementById('shopSearchInput')?.value;
+            if (q) params.set('q', q);
+
+            const cats = [...document.querySelectorAll('input[name="categories"]:checked')].map(el => el.value);
+            cats.forEach(c => params.append('categories', c));
+
+            const min = document.getElementById('rangeMin')?.value;
+            if (min && parseInt(min) > 0) params.set('minPrice', min);
+
+            const max = document.getElementById('rangeMax')?.value;
+            if (max && parseInt(max) < 50000000) params.set('maxPrice', max);
+
+            const sort = document.getElementById('sortSelect')?.value;
+            if (sort && sort !== 'newest') params.set('sort', sort);
+
+            params.set('page', page || 1);
+            return '@Url.Action("Index", "Shop")?' + params.toString();
+        }
+
+        function applyShopFilters(page) {
+            window.location.href = buildFilterUrl(page || 1);
+        }
+
+        // Search input - enter key
+        document.getElementById('shopSearchInput')?.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyShopFilters(1);
+            }
+        });
+
+        // Sidebar toggle (mobile)
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            const sidebar = document.getElementById('shopSidebar');
+            sidebar?.classList.toggle('open');
+        });
+
+        // Init slider visual on load
+        updateSlider();
+    </script>
+}

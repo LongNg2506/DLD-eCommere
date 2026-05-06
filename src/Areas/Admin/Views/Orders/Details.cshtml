@@ -1,0 +1,251 @@
+@model MyProject.Areas.Admin.ViewModels.OrderAdminDetailViewModel
+@{
+    ViewData["Title"] = $"Order Details #{Model.Id}";
+    var isAdmin = User.IsInRole("Admin");
+    var isStaff = User.IsInRole("Staff") || isAdmin;
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Order #@Model.Id</h1>
+        <p class="admin-page-subtitle">
+            @Model.InvoiceNumber &bull; Placed on @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
+        </p>
+    </div>
+    <div class="admin-page-header-right">
+        <a asp-area="Admin"
+   asp-controller="Orders"
+   asp-action="Invoice"
+   asp-route-id="@Model.Id"
+   target="_blank"
+   class="admin-btn">
+    Invoice
+</a>
+
+<a asp-area="Admin"
+   asp-controller="Orders"
+   asp-action="Index"
+   class="admin-btn">
+    Back to List
+</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="admin-form-grid">
+    <div class="admin-form-card">
+        <div class="admin-form-card-header">
+            <h3>Customer Information</h3>
+        </div>
+        <div class="admin-form-card-body">
+            <dl class="admin-info-list">
+                <dt>Customer Name</dt><dd>@Model.CustomerName</dd>
+                <dt>Email</dt><dd>@Model.CustomerEmail</dd>
+                <dt>Phone</dt><dd>@(Model.Phone ?? "-")</dd>
+                <dt>Shipping Address</dt><dd>@(Model.ShippingAddress ?? "-")</dd>
+                <dt>Note</dt><dd>@(Model.Note ?? "-")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="admin-form-card">
+        <div class="admin-form-card-header">
+            <h3>Payment & Order Status</h3>
+        </div>
+        <div class="admin-form-card-body">
+            <dl class="admin-info-list">
+                <dt>Payment Method</dt>
+                <dd>
+                    <span class="admin-badge admin-badge-info">@Model.PaymentMethod</span>
+                </dd>
+                <dt>Payment Status</dt>
+                <dd>
+                    @{
+                        var pBadge = Model.PaymentStatus switch
+                        {
+                            "Paid" => "admin-badge-success",
+                            "Pending" => "admin-badge-warning",
+                            "Refunded" => "admin-badge-danger",
+                            _ => "admin-badge-info"
+                        };
+                    }
+                    <span class="admin-badge @pBadge">@Model.PaymentStatus</span>
+                </dd>
+                <dt>Order Status</dt>
+                <dd>
+                    @{
+                        var oBadge = Model.Status switch
+                        {
+                            "Pending" => "admin-badge-warning",
+                            "Confirmed" or "Processing" => "admin-badge-info",
+                            "Shipped" => "admin-badge-purple",
+                            "Delivered" => "admin-badge-success",
+                            "Cancelled" => "admin-badge-danger",
+                            _ => "admin-badge-info"
+                        };
+                    }
+                    <span class="admin-badge @oBadge">@Model.Status</span>
+                </dd>
+                <dt>Total Amount</dt>
+                <dd style="font-weight:700;font-size:1.1rem;">@Model.TotalAmount.ToString("N0") VND</dd>
+            </dl>
+
+            @if (isStaff && Model.PaymentStatus != "Paid" && Model.PaymentMethod != "COD")
+            {
+                <form asp-area="Admin" asp-action="ConfirmPayment" method="post" class="admin-form-group" style="margin-top:16px;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="admin-form-row">
+                        <input type="text" name="transactionId" class="admin-form-input" placeholder="Transaction ID" />
+                        <button type="submit" class="admin-btn admin-btn-success">Confirm Payment</button>
+                    </div>
+                </form>
+            }
+            @if (isStaff && Model.PaymentStatus == "Pending" && Model.PaymentMethod == "COD")
+            {
+                <form asp-area="Admin" asp-action="UpdateStatus" method="post" class="admin-form-group" style="margin-top:16px;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="Confirmed" />
+                    <input type="hidden" name="note" value="COD payment received" />
+                    <button type="submit" class="admin-btn admin-btn-success">Confirm Order</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="admin-form-card">
+    <div class="admin-form-card-header">
+        <h3>Product List (@Model.Items.Count items)</h3>
+        @if (isAdmin && (Model.Status == "Confirmed" || Model.Status == "Processing") && Model.Items.Any())
+        {
+            <form asp-area="Admin" asp-action="DeductStock" method="post" style="margin-left:auto;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="admin-btn admin-btn-warning"
+                        onclick="return confirm('Deduct stock for these items? This cannot be undone.');">
+                    Deduct Stock
+                </button>
+            </form>
+        }
+    </div>
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td class="admin-table-name">@item.ProductName</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.UnitPrice.ToString("N0") VND</td>
+                        <td class="admin-table-price-sale">@item.Subtotal.ToString("N0") VND</td>
+                    </tr>
+                }
+                <tr style="font-weight:700;background:var(--admin-bg-secondary);">
+                    <td colspan="3" style="text-align:right;">Total:</td>
+                    <td style="font-weight:700;font-size:1.1rem;">@Model.TotalAmount.ToString("N0") VND</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (Model.StatusHistory.Any())
+{
+    <div class="admin-form-card">
+        <div class="admin-form-card-header">
+            <h3>Status History</h3>
+        </div>
+        <div class="admin-form-card-body">
+            <div class="status-timeline">
+                @foreach (var history in Model.StatusHistory)
+                {
+                    <div class="status-timeline-item">
+                        <div class="status-timeline-dot"></div>
+                        <div class="status-timeline-content">
+                            <div class="status-timeline-header">
+                                <span class="status-timeline-status">@history.Status</span>
+                                <span class="status-timeline-date">@history.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(history.Note))
+                            {
+                                <div class="status-timeline-note">@history.Note</div>
+                            }
+                            @if (!string.IsNullOrEmpty(history.UpdatedBy))
+                            {
+                                <div class="status-timeline-by">by @history.UpdatedBy</div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<div class="admin-form-card">
+    <div class="admin-form-card-header">
+        <h3>Update Order Status</h3>
+    </div>
+    <div class="admin-form-card-body">
+        <form asp-area="Admin" asp-action="UpdateStatus" method="post" class="admin-form-group">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="admin-form-row">
+                <div class="admin-form-group" style="flex:1;">
+                    <label class="admin-form-label">New Status</label>
+                    <select name="status" class="admin-form-select">
+                        <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
+                        <option value="Confirmed" selected="@(Model.Status == "Confirmed")">Confirmed</option>
+                        <option value="Processing" selected="@(Model.Status == "Processing")">Processing</option>
+                        <option value="Shipped" selected="@(Model.Status == "Shipped")">Shipped</option>
+                        <option value="Delivered" selected="@(Model.Status == "Delivered")">Delivered</option>
+                        <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Cancelled</option>
+                    </select>
+                </div>
+                <div class="admin-form-group" style="flex:1;">
+                    <label class="admin-form-label">Note (optional)</label>
+                    <input type="text" name="note" class="admin-form-input" placeholder="Add a note..." />
+                </div>
+                <div style="display:flex;align-items:flex-end;">
+                    <button type="submit" class="admin-btn admin-btn-primary">Update Status</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .admin-form-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .admin-btn-purple { background: #6610f2; color: #fff; }
+    .admin-btn-warning { background: #fd7e14; color: #fff; }
+    .admin-btn-success { background: #198754; color: #fff; }
+    .admin-badge-purple { background: rgba(102,16,242,0.15); color: #6610f2; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .status-timeline { display: flex; flex-direction: column; gap: 0; }
+    .status-timeline-item { display: flex; gap: 16px; padding-bottom: 16px; position: relative; }
+    .status-timeline-item:not(:last-child)::before { content: ''; position: absolute; left: 5px; top: 14px; bottom: 0; width: 2px; background: var(--admin-border); }
+    .status-timeline-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--admin-accent); flex-shrink: 0; margin-top: 4px; }
+    .status-timeline-content { flex: 1; }
+    .status-timeline-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .status-timeline-status { font-weight: 700; color: var(--admin-text-primary); }
+    .status-timeline-date { font-size: 0.85rem; color: var(--admin-text-secondary); }
+    .status-timeline-note { font-size: 0.9rem; color: var(--admin-text-primary); margin-top: 4px; }
+    .status-timeline-by { font-size: 0.8rem; color: var(--admin-text-secondary); margin-top: 2px; font-style: italic; }
+</style>

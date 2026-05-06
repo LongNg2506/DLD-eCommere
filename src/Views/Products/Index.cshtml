@@ -1,0 +1,118 @@
+@model List<MyProject.DTOs.Products.ProductListItemDto>
+
+@{
+    ViewData["Title"] = "Product List";
+}
+
+<h1 class="mb-4">Product List</h1>
+
+<form method="get" asp-action="Index" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Search products..." class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <select name="categoryId" class="form-select">
+            <option value="">-- All Categories --</option>
+            @foreach (var cat in ViewBag.Categories)
+            {
+                <option value="@cat.Id" selected="@(ViewBag.CategoryId == cat.Id)">@cat.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="isActive" class="form-select">
+            <option value="">-- All Statuses --</option>
+            <option value="true" selected="@(ViewBag.IsActive == true)">Selling</option>
+            <option value="false" selected="@(ViewBag.IsActive == false)">Discontinued</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+</form>
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Add Product</a>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No products found.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Original Price</th>
+                <th>Discount</th>
+                <th>Sale Price</th>
+                <th>Stock</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td style="width:60px;">
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl" alt="@product.Name" style="width:50px;height:50px;object-fit:cover;" class="rounded" />
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="width:50px;height:50px;font-size:12px;">No Image</div>
+                        }
+                    </td>
+                    <td>@product.Name</td>
+                    <td>@product.Price.ToString("N0") ₫</td>
+                    <td>
+                        @if (product.Discount > 0)
+                        {
+                            <span class="badge bg-danger">@product.Discount%</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+                    <td class="fw-bold text-success">@product.SalePrice.ToString("N0") ₫</td>
+                    <td>
+                        <span class="@(product.StockQuantity > 0 ? "text-success" : "text-danger")">
+                            @product.StockQuantity
+                        </span>
+                    </td>
+                    <td>@product.CategoryName</td>
+                    <td>
+                        @if (product.IsActive)
+                        {
+                            <span class="badge bg-success">Selling</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Discontinued</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-info mb-1">View</a>
+                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-warning mb-1">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@product.Id" method="post" style="display:inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger mb-1"
+                                    onclick="return confirm('Are you sure you want to delete &quot;@product.Name&quot;?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

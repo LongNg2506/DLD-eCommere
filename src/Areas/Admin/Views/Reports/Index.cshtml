@@ -1,0 +1,216 @@
+@model MyProject.Areas.Admin.ViewModels.ReportAdminViewModel
+@{
+    ViewData["Title"] = "Reports & Statistics";
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Reports & Statistics</h1>
+        <p class="admin-page-subtitle">Store overview</p>
+    </div>
+</div>
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.TotalOrders</div>
+        <div class="admin-stat-label">Total Orders</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-warning">
+        <div class="admin-stat-value">@Model.PendingOrders</div>
+        <div class="admin-stat-label">Pending</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-success">
+        <div class="admin-stat-value">@Model.CompletedOrders</div>
+        <div class="admin-stat-label">Completed</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.TotalRevenue.ToString("N0")</div>
+        <div class="admin-stat-label">Total Revenue</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.AverageOrderValue.ToString("N0")</div>
+        <div class="admin-stat-label">Avg Order Value</div>
+    </div>
+</div>
+
+<div class="admin-charts-grid">
+    <div class="admin-chart-card">
+        <div class="admin-chart-header">
+            <h3 class="admin-chart-title">Revenue by Month</h3>
+        </div>
+        <div class="admin-chart-body">
+            <canvas id="monthlyRevenueChart" height="220"></canvas>
+        </div>
+    </div>
+    <div class="admin-chart-card">
+        <div class="admin-chart-header">
+            <h3 class="admin-chart-title">Top Selling Products</h3>
+        </div>
+        <div class="admin-chart-body">
+            <canvas id="topProductsChart" height="220"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="admin-bottom-grid">
+    <div class="admin-list-card">
+        <div class="admin-list-header">
+            <h3 class="admin-list-title">Top Products by Quantity</h3>
+        </div>
+        <div class="admin-list-body">
+            @if (!Model.TopProductsByQuantity.Any())
+            {
+                <div class="admin-list-empty">
+                    <p>No data available.</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var p in Model.TopProductsByQuantity)
+                {
+                    <div class="admin-list-item">
+                        <div class="admin-list-item-info">
+                            <div class="admin-list-item-name">@p.ProductName</div>
+                            <div class="admin-list-item-meta">@p.TotalQuantity sold</div>
+                        </div>
+                        <div class="admin-list-item-right">
+                            <div class="admin-list-item-price">@p.TotalRevenue.ToString("N0")</div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="admin-list-card">
+        <div class="admin-list-header">
+            <h3 class="admin-list-title">Top Products by Revenue</h3>
+        </div>
+        <div class="admin-list-body">
+            @if (!Model.TopProductsByRevenue.Any())
+            {
+                <div class="admin-list-empty">
+                    <p>No data available.</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var p in Model.TopProductsByRevenue)
+                {
+                    <div class="admin-list-item">
+                        <div class="admin-list-item-info">
+                            <div class="admin-list-item-name">@p.ProductName</div>
+                            <div class="admin-list-item-meta">@p.TotalQuantity sold</div>
+                        </div>
+                        <div class="admin-list-item-right">
+                            <div class="admin-list-item-price">@p.TotalRevenue.ToString("N0")</div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Monthly Revenue Chart
+    var monthlyLabels = [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(m => $"'{m.MonthLabel}'")))];
+    var monthlyData = [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(m => m.Revenue)))];
+
+    if (monthlyLabels.length > 0) {
+        var ctxMonthly = document.getElementById('monthlyRevenueChart');
+        if (ctxMonthly) {
+            new Chart(ctxMonthly, {
+                type: 'bar',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [{
+                        label: 'Revenue',
+                        data: monthlyData,
+                        backgroundColor: '#38594e',
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.parsed.y.toLocaleString('vi-VN');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                callback: function(value) { return value.toLocaleString('vi-VN'); }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { maxRotation: 45, minRotation: 45 }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    // Top Products Chart
+    var topLabels = [@Html.Raw(string.Join(",", Model.TopProductsByQuantity.Select(p => $"'{p.ProductName}'")))];
+    var topData = [@Html.Raw(string.Join(",", Model.TopProductsByQuantity.Select(p => p.TotalQuantity)))];
+
+    if (topLabels.length > 0) {
+        var ctxTop = document.getElementById('topProductsChart');
+        if (ctxTop) {
+            new Chart(ctxTop, {
+                type: 'bar',
+                data: {
+                    labels: topLabels,
+                    datasets: [{
+                        label: 'Sold',
+                        data: topData,
+                        backgroundColor: '#a9cec2',
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            callbacks: {
+                                label: function(ctx) { return ctx.parsed.x + ' products'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    }
+});
+</script>
+}

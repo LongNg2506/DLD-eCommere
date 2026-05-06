@@ -1,0 +1,343 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- ================================
+     HERO SECTION
+     ================================ -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 hero-content">
+                <div class="hero-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+                    New Season 2026 Collection
+                </div>
+                <h1 class="hero-title">
+                    Timeless<br/>
+                    Elegance<br/>
+                    <span class="highlight">Redefined</span>
+                </h1>
+                <p class="hero-desc">
+                    Discover our curated collection of premium timepieces crafted for those who appreciate precision, quality, and enduring style.
+                </p>
+                <div class="hero-buttons">
+                    <a asp-controller="Shop" asp-action="Index" class="btn-primary-custom">
+                        Shop Now
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </a>
+                    <a href="#featured" class="btn-secondary-custom">
+                        Explore Collection
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <h3>500+</h3>
+                        <p>Products</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>12K+</h3>
+                        <p>Happy Customers</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>50+</h3>
+                        <p>Brands</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image-area">
+                    <div class="hero-product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600&q=80"
+                                 alt="Featured Watch"
+                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                            <div class="product-image-placeholder" style="display:none">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 6V12L16 14"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="hero-product-info">
+                            <div class="hero-product-text">
+                                <p class="hero-product-name">Featured Watch</p>
+                                <p class="hero-product-sub">Premium Collection</p>
+                            </div>
+                            <span class="hero-product-price">$4,050,000</span>
+                        </div>
+                        <div class="hero-product-actions">
+                            <button class="btn-primary-custom" onclick="openCart()" style="flex:1;justify-content:center;font-size:0.85rem;padding:10px 16px">
+                                Add to Cart
+                            </button>
+                            <button class="quick-action-btn wishlist" title="Add to Wishlist">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================
+     FEATURES BANNER
+     ================================ -->
+<section class="features-banner section-padding">
+    <div class="container">
+        <div class="features-card">
+            <div class="row g-0">
+                <div class="col-6 col-md-3 feature-col">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                            </svg>
+                        </div>
+                        <div class="feature-title">Free Shipping</div>
+                        <div class="feature-desc">On orders over $50</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 feature-col">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <div class="feature-title">Secure Payment</div>
+                        <div class="feature-desc">100% secure checkout</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 feature-col">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                            </svg>
+                        </div>
+                        <div class="feature-title">30-Day Returns</div>
+                        <div class="feature-desc">Money-back guarantee</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 feature-col">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <div class="feature-title">24/7 Support</div>
+                        <div class="feature-desc">Dedicated support team</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================
+     FLASH DEALS
+     ================================ -->
+@if (Model.FlashDeals.Any())
+{
+    <section class="flash-deals-section section-padding" id="deals">
+        <div class="container">
+            <div class="flash-header">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        <h2 class="section-title mb-0">Flash Deals</h2>
+                    </div>
+                    <p class="section-subtitle mb-0">Limited time offers — don't miss out!</p>
+                </div>
+                <div class="flash-timer" id="flashTimer">
+                    <div class="timer-block"><span class="timer-number">10</span><span class="timer-label">Hours</span></div>
+                    <span class="timer-sep">:</span>
+                    <div class="timer-block"><span class="timer-number">00</span><span class="timer-label">Min</span></div>
+                    <span class="timer-sep">:</span>
+                    <div class="timer-block"><span class="timer-number">00</span><span class="timer-label">Sec</span></div>
+                </div>
+            </div>
+            <div class="products-grid">
+                @foreach (var product in Model.FlashDeals)
+                {
+                    @await Html.PartialAsync("_ProductCard", product)
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- ================================
+     CATEGORIES
+     ================================ -->
+<section class="categories-section section-padding">
+    <div class="container">
+        <div class="section-header-centered">
+            <h2 class="section-title">Shop by Category</h2>
+            <p class="section-subtitle">Find the perfect timepiece for every occasion</p>
+        </div>
+        <div class="categories-grid">
+            @foreach (var cat in Model.Categories)
+            {
+                <a class="category-card" asp-controller="Shop" asp-action="Index" asp-route-categories="@cat.Id">
+                    <div class="category-icon">
+                        @{
+                            string catImgUrl = cat.Icon switch
+                            {
+                                "men"    => "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&q=80",
+                                "women"  => "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&q=80",
+                                "couple" => "https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=400&q=80",
+                                "luxury" => "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=400&q=80",
+                                "smart"  => "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&q=80",
+                                "sport"  => "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400&q=80",
+                                "casual" => "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=400&q=80",
+                                "dress"  => "https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=400&q=80",
+                                _        => "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&q=80"
+                            };
+                        }
+                        <img src="@catImgUrl" alt="@cat.Name"
+                             style="border-radius: var(--radius-md);"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
+                        <svg class="category-icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                            <circle cx="12" cy="12" r="10"/><path d="M12 6V12L16 14"/>
+                        </svg>
+                    </div>
+                    <div class="category-name">@cat.Name</div>
+                    <div class="category-count">Explore</div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ================================
+     FEATURED PRODUCTS
+     ================================ -->
+<section class="section-padding featured-section" id="featured">
+    <div class="container">
+        <div class="section-header-centered">
+            <h2 class="section-title">Featured Products</h2>
+            <p class="section-subtitle">Hand-picked by our experts just for you</p>
+        </div>
+        <div class="products-grid">
+            @foreach (var product in Model.FeaturedProducts)
+            {
+                @await Html.PartialAsync("_ProductCard", product)
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ================================
+     NEW ARRIVALS
+     ================================ -->
+<section class="section-padding new-arrivals-section">
+    <div class="container">
+        <div class="section-header-centered">
+            <h2 class="section-title">New Arrivals</h2>
+            <p class="section-subtitle">The latest additions to our collection</p>
+        </div>
+        <div class="products-grid">
+            @foreach (var product in Model.NewArrivals)
+            {
+                @await Html.PartialAsync("_ProductCard", product)
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ================================
+     BEST SELLERS BANNER
+     ================================ -->
+<section class="browse-section section-padding">
+    <div class="container">
+        <div class="browse-grid">
+            <div class="browse-card browse-card-large">
+                <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80"
+                     alt="Luxury Men's Collection"
+                     onerror="this.parentElement.classList.add('browse-card-placeholder')" />
+                <div class="browse-card-content">
+                    <span class="browse-card-label">Luxury Collection</span>
+                    <h3 class="browse-card-title">Men's Premium<br/>Timepieces</h3>
+                    <a asp-controller="Shop" asp-action="Index" asp-route-categories="1" class="btn-primary-custom" style="background:var(--accent);color:#fff;margin-top:16px">
+                        Shop Now
+                    </a>
+                </div>
+            </div>
+            <div class="browse-card">
+                <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&q=80"
+                     alt="Women's Watches"
+                     onerror="this.parentElement.classList.add('browse-card-placeholder')" />
+                <div class="browse-card-content">
+                    <span class="browse-card-label">Elegant</span>
+                    <h3 class="browse-card-title">Women's<br/>Watches</h3>
+                    <a asp-controller="Shop" asp-action="Index" asp-route-categories="2" class="btn-primary-custom" style="background:#e91e63;color:#fff;margin-top:12px;font-size:0.82rem;padding:9px 18px">
+                        Explore
+                    </a>
+                </div>
+            </div>
+            <div class="browse-card">
+                <img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=600&q=80"
+                     alt="Couple Watches"
+                     onerror="this.parentElement.classList.add('browse-card-placeholder')" />
+                <div class="browse-card-content">
+                    <span class="browse-card-label">Matching Pair</span>
+                    <h3 class="browse-card-title">Couple<br/>Watches</h3>
+                    <a asp-controller="Shop" asp-action="Index" asp-route-categories="3" class="btn-primary-custom" style="background:#9c27b0;color:#fff;margin-top:12px;font-size:0.82rem;padding:9px 18px">
+                        Explore
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================
+     BANNER CTA
+     ================================ -->
+<section class="cta-banner-section" style="padding:0 0 80px">
+    <div class="container">
+        <div class="cta-inner">
+            <div class="cta-orb cta-orb-1"></div>
+            <div class="cta-orb cta-orb-2"></div>
+            <div class="cta-orb cta-orb-3"></div>
+            <div class="cta-content">
+                <span class="cta-badge">SEASON 2026</span>
+                <h2 class="cta-title">Special Offer on<br/>Premium Collection</h2>
+                <p class="cta-desc">Get up to 30% off on selected premium watches. Limited time offer — shop now and elevate your style.</p>
+                <a asp-controller="Shop" asp-action="Index" class="btn-primary-custom cta-btn">
+                    Shop the Sale
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================
+     NEWSLETTER
+     ================================ -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="text-center newsletter-inner">
+            <h2 class="newsletter-title">Stay in the Loop</h2>
+            <p class="newsletter-desc">Subscribe to get exclusive deals, new arrivals, and style tips.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault();showToast('Thank you for subscribing!','success')">
+                <input type="email" placeholder="Enter your email address" required />
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+</section>

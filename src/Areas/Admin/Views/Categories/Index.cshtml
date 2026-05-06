@@ -1,0 +1,80 @@
+@model MyProject.Areas.Admin.ViewModels.CategoryAdminIndexViewModel
+@{
+    ViewData["Title"] = "Category Management";
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Category Management</h1>
+        <p class="admin-page-subtitle">@Model.TotalCount categories</p>
+    </div>
+    <div class="admin-page-header-right">
+        <a asp-area="Admin" asp-action="Create" class="admin-btn admin-btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Category
+        </a>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="admin-alert admin-alert-danger">
+        <span>@TempData["Error"]</span>
+    </div>
+}
+
+<div class="admin-table-card">
+    <div class="admin-table-header">
+        <h3 class="admin-table-title">All Categories (@Model.Categories.Count)</h3>
+    </div>
+    <div class="admin-table-wrapper">
+        @if (!Model.Categories.Any())
+        {
+            <div class="admin-empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <p>No categories found.</p>
+            </div>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Products</th>
+                        <th>Created Date</th>
+                        <th style="width:140px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <tr>
+                            <td>
+                                <div class="admin-table-name">@c.Name</div>
+                            </td>
+                            <td class="admin-table-muted">@(string.IsNullOrEmpty(c.Description) ? "-" : c.Description)</td>
+                            <td>
+                                <span class="admin-badge admin-badge-info">@c.ProductCount products</span>
+                            </td>
+                            <td>@c.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <div class="admin-table-actions">
+                                    <a asp-area="Admin" asp-action="Edit" asp-route-id="@c.Id" class="admin-btn admin-btn-sm admin-btn-info">Edit</a>
+                                    <form asp-area="Admin" asp-action="Delete" asp-route-id="@c.Id" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="admin-btn admin-btn-sm admin-btn-danger"
+                                                onclick="return confirm('Confirm delete category &quot;@c.Name&quot;?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

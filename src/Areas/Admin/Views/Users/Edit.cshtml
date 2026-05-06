@@ -1,0 +1,78 @@
+@model MyProject.Areas.Admin.ViewModels.UserAdminDetailViewModel
+@{
+    ViewData["Title"] = "Edit Customer";
+}
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Edit Account</h1>
+        <p class="admin-page-subtitle">@Model.FullName</p>
+    </div>
+</div>
+
+<div class="admin-form-grid">
+    <div class="admin-form-card">
+        <div class="admin-form-card-header">
+            <h3>Account Information</h3>
+        </div>
+        <div class="admin-form-card-body">
+            <dl class="admin-info-list">
+                <dt>Full Name</dt><dd>@Model.FullName</dd>
+                <dt>Email</dt><dd>@Model.Email</dd>
+                <dt>Phone</dt><dd>@(Model.Phone ?? "-")</dd>
+                <dt>Address</dt><dd>@(Model.Address ?? "-")</dd>
+                <dt>Created Date</dt><dd>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+                @if (Model.UpdatedAt.HasValue)
+                {
+                    <dt>Last Updated</dt><dd>@Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+                }
+            </dl>
+        </div>
+    </div>
+
+    <div class="admin-form-card">
+        <div class="admin-form-card-header">
+            <h3>Account Management</h3>
+        </div>
+        <div class="admin-form-card-body">
+            <form method="post" style="margin-bottom:24px;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="vm.Id" value="@Model.Id" />
+                <input type="hidden" name="action" value="updateRole" />
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Role</label>
+                    <select name="vm.Role" class="admin-form-select">
+                        <option value="Admin" selected="@(Model.Role == "Admin")">Admin</option>
+                        <option value="Staff" selected="@(Model.Role == "Staff")">Staff</option>
+                        <option value="Customer" selected="@(Model.Role == "Customer")">Customer</option>
+                    </select>
+                </div>
+                <button type="submit" class="admin-btn admin-btn-primary" style="width:100%;">
+                    Update Role
+                </button>
+            </form>
+
+            <hr style="border:none;border-top:1px solid var(--admin-border);margin:24px 0;" />
+
+            <div class="admin-form-group">
+                <label class="admin-form-label">Current Status</label>
+                <div style="margin:8px 0 16px;">
+                    <span class="admin-badge @(Model.IsActive ? "admin-badge-success" : "admin-badge-danger")">
+                        @(Model.IsActive ? "Active" : "Locked")
+                    </span>
+                </div>
+            </div>
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="vm.Id" value="@Model.Id" />
+                <input type="hidden" name="action" value="toggleActive" />
+                <button type="submit" class="admin-btn @(Model.IsActive ? "admin-btn-danger" : "admin-btn-primary")" style="width:100%;">
+                    @(Model.IsActive ? "Lock Account" : "Unlock Account")
+                </button>
+            </form>
+        </div>
+        <div class="admin-form-card-footer">
+            <a asp-action="Index" class="admin-btn">Back to List</a>
+        </div>
+    </div>
+</div>

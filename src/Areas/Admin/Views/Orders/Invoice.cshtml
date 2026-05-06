@@ -1,0 +1,128 @@
+@model MyProject.Areas.Admin.ViewModels.OrderAdminDetailViewModel
+@{
+    ViewData["Title"] = $"Invoice {Model.InvoiceNumber}";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Invoice @Model.InvoiceNumber</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #333; padding: 40px; background: #fff; }
+        .invoice-wrapper { max-width: 800px; margin: 0 auto; }
+        .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 30px; border-bottom: 2px solid #333; margin-bottom: 30px; }
+        .invoice-logo h1 { font-size: 28px; letter-spacing: 2px; color: #333; }
+        .invoice-logo p { color: #666; font-size: 13px; margin-top: 4px; }
+        .invoice-meta { text-align: right; }
+        .invoice-meta h2 { font-size: 22px; color: #333; text-transform: uppercase; }
+        .invoice-meta p { color: #666; font-size: 13px; margin-top: 4px; }
+        .invoice-meta .invoice-number { font-weight: 700; font-size: 16px; color: #333; }
+        .invoice-info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 30px; }
+        .invoice-info-block h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 8px; }
+        .invoice-info-block p { font-size: 13px; line-height: 1.6; }
+        .invoice-info-block strong { font-weight: 700; }
+        .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+        .invoice-table th { background: #f5f5f5; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #ddd; }
+        .invoice-table td { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .invoice-table .text-right { text-align: right; }
+        .invoice-table .text-center { text-align: center; }
+        .invoice-table tfoot td { font-weight: 700; font-size: 15px; border-top: 2px solid #333; border-bottom: none; }
+        .invoice-table tfoot .total-label { text-align: right; }
+        .invoice-table tfoot .total-value { text-align: right; font-size: 18px; }
+        .invoice-footer { padding-top: 24px; border-top: 1px solid #eee; font-size: 12px; color: #999; text-align: center; }
+        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-paid { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .print-btn { display: block; width: 200px; margin: 30px auto 0; padding: 12px; background: #333; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; }
+        .print-btn:hover { background: #000; }
+        @@media print {
+            .print-btn { display: none; }
+            body { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-wrapper">
+        <div class="invoice-header">
+            <div class="invoice-logo">
+                <h1>DLD</h1>
+                <p>Premium Watch Store</p>
+            </div>
+            <div class="invoice-meta">
+                <h2>Invoice</h2>
+                <p class="invoice-number">@Model.InvoiceNumber</p>
+                <p>Date: @Model.OrderDate.ToString("dd/MM/yyyy")</p>
+                <p>
+                    Status: <span class="status-badge @(Model.PaymentStatus == "Paid" ? "status-paid" : "status-pending")">
+                        @Model.Status
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <div class="invoice-info-grid">
+            <div class="invoice-info-block">
+                <h4>Customer</h4>
+                <p><strong>@Model.CustomerName</strong></p>
+                <p>@Model.CustomerEmail</p>
+                @if (!string.IsNullOrEmpty(Model.Phone))
+                {
+                    <p>@Model.Phone</p>
+                }
+            </div>
+            <div class="invoice-info-block">
+                <h4>Shipping Address</h4>
+                <p>@(string.IsNullOrEmpty(Model.ShippingAddress) ? "-" : Model.ShippingAddress)</p>
+            </div>
+            <div class="invoice-info-block">
+                <h4>Payment</h4>
+                <p><strong>@Model.PaymentMethod</strong></p>
+                <p>Status: <span class="status-badge @(Model.PaymentStatus == "Paid" ? "status-paid" : "status-pending")">@Model.PaymentStatus</span></p>
+            </div>
+        </div>
+
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th style="width:50%">Product</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-right">Unit Price</th>
+                    <th class="text-right">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-right">@item.UnitPrice.ToString("N0") VND</td>
+                        <td class="text-right">@item.Subtotal.ToString("N0") VND</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="total-label">TOTAL</td>
+                    <td class="total-value">@Model.TotalAmount.ToString("N0") VND</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        @if (!string.IsNullOrEmpty(Model.Note))
+        {
+            <div style="margin-top:20px;padding:12px 16px;background:#f9f9f9;border-radius:6px;font-size:13px;">
+                <strong>Note:</strong> @Model.Note
+            </div>
+        }
+
+        <div class="invoice-footer">
+            <p>Thank you for your purchase! &bull; DLD Premium Watch Store &bull; DLDStore.com</p>
+        </div>
+
+        <button class="print-btn" onclick="window.print()">Print Invoice</button>
+    </div>
+</body>
+</html>

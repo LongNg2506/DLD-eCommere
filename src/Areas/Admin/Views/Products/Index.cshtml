@@ -1,0 +1,830 @@
+@model MyProject.Areas.Admin.ViewModels.ProductAdminIndexViewModel
+@{
+    ViewData["Title"] = "Product Management";
+}
+
+<style>
+    .admin-table-scroll-wrap {
+        position: relative;
+    }
+    .admin-table-scroll-top {
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 8px;
+        background: transparent;
+        cursor: pointer;
+    }
+    .admin-table-scroll-top::-webkit-scrollbar {
+        height: 8px;
+    }
+    .admin-table-scroll-top::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .admin-table-scroll-top::-webkit-scrollbar-thumb {
+        background: var(--admin-border);
+        border-radius: 4px;
+    }
+
+    /* ===== Edit Modal ===== */
+    :root {
+        --edit-modal-bg: #f5f6f8;
+        --edit-modal-body-bg: #ffffff;
+    }
+    [data-theme="dark"] {
+        --edit-modal-bg: #1a1a1a;
+        --edit-modal-body-bg: #1e1e1e;
+    }
+
+    .edit-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .edit-modal-overlay.show {
+        display: flex;
+    }
+    .edit-modal {
+        background: var(--edit-modal-bg);
+        border: 1px solid var(--admin-border);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 680px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    }
+    .edit-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--admin-border);
+        background: var(--edit-modal-body-bg);
+        flex-shrink: 0;
+    }
+    .edit-modal-header h3 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--admin-text);
+        font-family: 'Playfair Display', serif;
+    }
+    .edit-modal-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--admin-text-muted);
+        padding: 4px;
+        display: flex;
+        border-radius: 6px;
+        transition: all 0.2s;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+    }
+    .edit-modal-close:hover {
+        background: var(--admin-border);
+        color: var(--admin-text);
+    }
+    .edit-modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+        background: var(--edit-modal-body-bg);
+    }
+    .edit-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 16px 24px;
+        border-top: 1px solid var(--admin-border);
+        background: var(--edit-modal-body-bg);
+        flex-shrink: 0;
+    }
+    .edit-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    .edit-form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+    .edit-form-group:last-child {
+        margin-bottom: 0;
+    }
+    .edit-form-label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--admin-text);
+        margin-bottom: 4px;
+    }
+    .edit-form-control {
+        width: 100%;
+        padding: 9px 14px;
+        border: 1px solid var(--admin-border);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        background: #ffffff;
+        color: var(--admin-text);
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+    }
+    .edit-form-control:focus {
+        border-color: var(--admin-accent);
+        box-shadow: 0 0 0 3px rgba(169, 206, 194, 0.2);
+    }
+    .edit-form-textarea {
+        resize: vertical;
+        min-height: 80px;
+        height: auto;
+    }
+    .edit-form-select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f5c6d' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 36px !important;
+        cursor: pointer;
+    }
+    .edit-form-error {
+        font-size: 0.78rem;
+        color: #e63946;
+        margin: 0;
+        display: block;
+    }
+    .edit-form-error-wrap {
+        min-height: 20px;
+    }
+    .edit-form-checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+    .edit-form-checkbox-row input {
+        accent-color: var(--admin-accent);
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+    .edit-form-checkbox-row label {
+        font-size: 0.85rem;
+        color: var(--admin-text);
+        cursor: pointer;
+        margin: 0;
+    }
+    .edit-img-preview {
+        margin-top: 8px;
+        max-width: 100%;
+        max-height: 130px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid var(--admin-border);
+    }
+    .edit-modal-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px;
+        color: var(--admin-text-muted);
+        font-size: 0.9rem;
+    }
+    .edit-modal-alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .edit-modal-alert.alert-error {
+        background: rgba(230,57,70,0.1);
+        border: 1px solid rgba(230,57,70,0.25);
+        color: #e63946;
+    }
+    .edit-modal-alert.alert-success {
+        background: rgba(40,167,69,0.1);
+        border: 1px solid rgba(40,167,69,0.25);
+        color: #28a745;
+    }
+    .text-danger { color: #e63946; }
+
+    [data-theme="dark"] .edit-modal {
+        box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    }
+    [data-theme="dark"] .edit-form-control {
+        background: #111111 !important;
+        border-color: #2a2a2a;
+        color: #aca9bb;
+    }
+    [data-theme="dark"] .edit-form-control:focus {
+        border-color: #38594e;
+        box-shadow: 0 0 0 3px rgba(56, 89, 78, 0.3);
+    }
+    [data-theme="dark"] .edit-modal-alert.alert-success {
+        background: rgba(40,167,69,0.15);
+        color: #4ade80;
+    }
+
+    /* ===== Toast ===== */
+    .toast-container {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .toast {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        animation: toastIn 0.3s ease;
+        max-width: 360px;
+    }
+    .toast.toast-success {
+        background: #22c55e;
+        color: #fff;
+    }
+    .toast.toast-error {
+        background: #e63946;
+        color: #fff;
+    }
+    @@keyframes toastIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+</style>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+@Html.AntiForgeryToken()
+
+<div class="admin-page-header">
+    <div class="admin-page-header-left">
+        <h1 class="admin-page-title">Product Management</h1>
+        <p class="admin-page-subtitle">@Model.TotalCount products in store</p>
+    </div>
+    <div class="admin-page-header-right">
+        <button type="button" class="admin-btn admin-btn-primary" onclick="openCreateModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Product
+        </button>
+    </div>
+</div>
+
+<form method="get" class="admin-filter-bar">
+    <input type="text" name="keyword" value="@Model.SearchKeyword" placeholder="Search products..." class="admin-filter-input" />
+    <select name="categoryId" class="admin-filter-select">
+        <option value="">-- All Categories --</option>
+        @foreach (var cat in Model.Categories)
+        {
+            <option value="@cat.Id" selected="@(Model.FilterCategoryId == cat.Id)">@cat.Name</option>
+        }
+    </select>
+    <select name="isActive" class="admin-filter-select">
+        <option value="">-- Status --</option>
+        <option value="true" selected="@(Model.FilterIsActive == true)">Active</option>
+        <option value="false" selected="@(Model.FilterIsActive == false)">Inactive</option>
+    </select>
+    <button type="submit" class="admin-btn admin-btn-primary">Filter</button>
+    <a asp-action="Index" class="admin-btn">Reset</a>
+</form>
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.TotalCount</div>
+        <div class="admin-stat-label">Total Products</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-success">
+        <div class="admin-stat-value">@Model.ActiveCount</div>
+        <div class="admin-stat-label">Active</div>
+    </div>
+    <div class="admin-stat-card admin-stat-card-danger">
+        <div class="admin-stat-value">@Model.InactiveCount</div>
+        <div class="admin-stat-label">Inactive</div>
+    </div>
+</div>
+
+<div class="admin-table-card">
+    <div class="admin-table-header">
+        <h3 class="admin-table-title">Product List (@Model.Products.Count)</h3>
+    </div>
+    <div class="admin-table-scroll-wrap">
+        <div class="admin-table-scroll-top" id="tableScrollTop"></div>
+        <div class="admin-table-wrapper" id="tableWrapper" onscroll="syncScrollTop(this)">
+        @if (!Model.Products.Any())
+        {
+            <div class="admin-empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <p>No products found.</p>
+            </div>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px;">Image</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Original Price</th>
+                        <th>Discount</th>
+                        <th>Sale Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th style="width:140px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Products)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(p.ImageUrl))
+                                {
+                                    <img src="@p.ImageUrl" alt="@p.Name" class="admin-table-img" />
+                                }
+                                else
+                                {
+                                    <div class="admin-table-img-placeholder">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <div class="admin-table-name">@p.Name</div>
+                                <div class="admin-table-meta">@p.CreatedAt.ToString("dd/MM/yyyy")</div>
+                            </td>
+                            <td>@p.CategoryName</td>
+                            <td class="admin-table-price-original">@p.Price.ToString("N0")</td>
+                            <td>
+                                @if (p.Discount > 0)
+                                {
+                                    <span class="admin-badge admin-badge-danger">-@p.Discount%</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-table-muted">-</span>
+                                }
+                            </td>
+                            <td class="admin-table-price-sale">@p.SalePrice.ToString("N0")</td>
+                            <td>
+                                @if (p.StockQuantity == 0)
+                                {
+                                    <span class="admin-badge admin-badge-danger">Out of Stock</span>
+                                }
+                                else if (p.StockQuantity <= 5)
+                                {
+                                    <span class="admin-badge admin-badge-warning">@p.StockQuantity</span>
+                                }
+                                else
+                                {
+                                    <span>@p.StockQuantity</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="admin-badge @(p.IsActive ? "admin-badge-success" : "admin-badge-danger")">
+                                    @(p.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="admin-table-actions">
+                                    <button type="button" class="admin-btn admin-btn-sm admin-btn-info"
+                                            onclick="openEditModal(@p.Id)">Edit</button>
+                                    <form asp-area="Admin" asp-action="Delete" asp-route-id="@p.Id" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="admin-btn admin-btn-sm admin-btn-danger"
+                                                onclick="return confirm('Confirm delete product &quot;@p.Name&quot;?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<!-- Create Product Modal -->
+<div class="edit-modal-overlay" id="createModal">
+    <div class="edit-modal">
+        <div class="edit-modal-header">
+            <h3>Add New Product</h3>
+            <button type="button" class="edit-modal-close" onclick="closeCreateModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <div class="edit-modal-body" id="createModalBody"></div>
+        <div class="edit-modal-footer">
+            <button type="button" class="admin-btn" onclick="closeCreateModal()">Cancel</button>
+            <button type="button" class="admin-btn admin-btn-primary" id="createModalSubmit" onclick="submitCreateModal()">
+                Save Product
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div class="edit-modal-overlay" id="editModal">
+    <div class="edit-modal">
+        <div class="edit-modal-header">
+            <h3>Edit Product</h3>
+            <button type="button" class="edit-modal-close" onclick="closeEditModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <div class="edit-modal-body" id="editModalBody">
+            <div class="edit-modal-loading">Loading...</div>
+        </div>
+        <div class="edit-modal-footer">
+            <button type="button" class="admin-btn" onclick="closeEditModal()">Cancel</button>
+            <button type="button" class="admin-btn admin-btn-primary" id="editModalSubmit" onclick="submitEditModal()">
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function syncScrollTop(wrapper) {
+    var top = document.getElementById('tableScrollTop');
+    if (top) top.scrollLeft = wrapper.scrollLeft;
+}
+function initTopScroll() {
+    var wrapper = document.getElementById('tableWrapper');
+    var top = document.getElementById('tableScrollTop');
+    if (!wrapper || !top) return;
+    var sentinel = document.createElement('div');
+    sentinel.style.cssText = 'width:' + (wrapper.scrollWidth + 1) + 'px;height:1px;overflow:hidden;opacity:0;pointer-events:none;';
+    top.appendChild(sentinel);
+    top.onscroll = function() { wrapper.scrollLeft = top.scrollLeft; };
+}
+document.addEventListener('DOMContentLoaded', initTopScroll);
+
+// ===== Toast =====
+function showToast(message, type) {
+    var container = document.getElementById('toastContainer');
+    var toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    var icon = type === 'success'
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    toast.innerHTML = icon + '<span>' + message + '</span>';
+    container.appendChild(toast);
+    setTimeout(function() {
+        toast.style.animation = 'toastIn 0.3s ease reverse';
+        setTimeout(function() { toast.remove(); }, 300);
+    }, 3500);
+}
+
+// ===== Edit Modal =====
+var currentProductId = null;
+
+function openEditModal(productId) {
+    currentProductId = productId;
+    var modal = document.getElementById('editModal');
+    var body = document.getElementById('editModalBody');
+    body.innerHTML = '<div class="edit-modal-loading">Loading...</div>';
+    modal.classList.add('show');
+
+    fetch('/Admin/Products/GetProductJson?id=' + productId)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            renderEditForm(data);
+        })
+        .catch(function() {
+            body.innerHTML = '<p style="color:#e63946;text-align:center;padding:20px;">Failed to load product data.</p>';
+        });
+}
+
+function closeEditModal() {
+    var modal = document.getElementById('editModal');
+    modal.classList.remove('show');
+    currentProductId = null;
+}
+
+function renderEditForm(data) {
+    var body = document.getElementById('editModalBody');
+    var categoriesHtml = '';
+    @foreach (var cat in Model.Categories)
+    {
+        <text>
+        categoriesHtml += '<option value="@cat.Id">@cat.Name</option>';
+        </text>
+    }
+    var selectedCat = data.categoryId;
+    var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    var tokenValue = tokenInput ? tokenInput.value : '';
+
+    body.innerHTML = `
+        <form id="editProductForm">
+            <input type="hidden" name="Id" value="${data.id}" />
+            <div id="editFormAlert"></div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Product Name <span class="text-danger">*</span></label>
+                <input type="text" name="Name" class="edit-form-control" value="${escapeHtml(data.name || '')}" placeholder="Enter product name..." />
+                <span class="edit-form-error-wrap"></span>
+            </div>
+            <div class="edit-form-row">
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Price ($) <span class="text-danger">*</span></label>
+                    <input type="number" name="Price" class="edit-form-control" value="${data.price}" step="1000" min="0" />
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Discount (%)</label>
+                    <input type="number" name="Discount" class="edit-form-control" value="${data.discount}" step="1" min="0" max="100" placeholder="0" />
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+            </div>
+            <div class="edit-form-row">
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Stock Quantity</label>
+                    <input type="number" name="StockQuantity" class="edit-form-control" value="${data.stockQuantity}" step="1" min="0" />
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Category <span class="text-danger">*</span></label>
+                    <select name="CategoryId" class="edit-form-control edit-form-select" id="editCategorySelect">
+                    </select>
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+            </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Description</label>
+                <textarea name="Description" class="edit-form-control edit-form-textarea" placeholder="Enter description...">${escapeHtml(data.description || '')}</textarea>
+            </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Main Image URL</label>
+                <input type="text" name="ImageUrl" class="edit-form-control" value="${escapeHtml(data.imageUrl || '')}" placeholder="https://..." />
+                ${data.imageUrl ? '<img src="' + data.imageUrl + '" class="edit-img-preview" alt="Preview" />' : ''}
+            </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Collection Image URLs (comma-separated)</label>
+                <input type="text" name="GalleryImages" class="edit-form-control" value="${escapeHtml(data.galleryImages || '')}" placeholder="url1, url2, url3" />
+            </div>
+            <div class="edit-form-checkbox-row">
+                <input type="checkbox" name="IsActiveBool" id="editIsActive" ${data.isActive ? 'checked' : ''} />
+                <label for="editIsActive">Active</label>
+            </div>
+        </form>
+    `;
+
+    // Populate category dropdown
+    var catSelect = document.getElementById('editCategorySelect');
+    catSelect.innerHTML = '<option value="">-- Select category --</option>' + categoriesHtml;
+    catSelect.value = selectedCat;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function submitEditModal() {
+    var form = document.getElementById('editProductForm');
+    if (!form) return;
+
+    // Clear previous alert
+    var alertEl = document.getElementById('editFormAlert');
+    if (alertEl) alertEl.innerHTML = '';
+
+    var submitBtn = document.getElementById('editModalSubmit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+
+    // Get anti-forgery token from page
+    var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    var token = tokenInput ? tokenInput.value : '';
+
+    // Build form data
+    var formData = new FormData(form);
+    // Add token to FormData manually (for proper binding)
+    formData.append('__RequestVerificationToken', token);
+
+    var params = new URLSearchParams();
+    formData.forEach(function(value, key) {
+        params.append(key, value);
+    });
+
+    fetch('/Admin/Products/UpdateAjax', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'RequestVerificationToken': token
+        },
+        body: params.toString()
+    })
+    .then(function(response) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
+
+        if (!response.ok) {
+            throw new Error('Server error: ' + response.status);
+        }
+
+        return response.json();
+    })
+    .then(function(result) {
+        if (result.success) {
+            showToast('Product updated successfully!', 'success');
+            setTimeout(function() { window.location.href = '/Admin/Products'; }, 1200);
+        } else {
+            showToast(result.message || 'Failed to update product.', 'error');
+            // Show inline error in modal
+            if (alertEl) {
+                alertEl.innerHTML = '<div class="edit-modal-alert alert-error"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' + (result.message || 'Failed to update product.') + '</div>';
+            }
+        }
+    })
+    .catch(function(err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
+        showToast('An error occurred: ' + err.message, 'error');
+        if (alertEl) {
+            alertEl.innerHTML = '<div class="edit-modal-alert alert-error"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>An error occurred. Please try again.</div>';
+        }
+    });
+}
+
+// ===== Create Modal =====
+function openCreateModal() {
+    var modal = document.getElementById('createModal');
+    var body = document.getElementById('createModalBody');
+    modal.classList.add('show');
+
+    var categoriesHtml = '';
+    @foreach (var cat in Model.Categories)
+    {
+        <text>
+        categoriesHtml += '<option value="@cat.Id">@cat.Name</option>';
+        </text>
+    }
+
+    body.innerHTML = `
+        <form id="createProductForm">
+            <div id="createFormAlert"></div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Product Name <span class="text-danger">*</span></label>
+                <input type="text" name="Name" class="edit-form-control" placeholder="Enter product name..." />
+                <span class="edit-form-error-wrap"></span>
+            </div>
+            <div class="edit-form-row">
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Price ($) <span class="text-danger">*</span></label>
+                    <input type="number" name="Price" class="edit-form-control" step="1000" min="0" placeholder="0" />
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Discount (%)</label>
+                    <input type="number" name="Discount" class="edit-form-control" step="1" min="0" max="100" placeholder="0" />
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+            </div>
+            <div class="edit-form-row">
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Stock Quantity</label>
+                    <input type="number" name="StockQuantity" class="edit-form-control" step="1" min="0" placeholder="0" />
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+                <div class="edit-form-group">
+                    <label class="edit-form-label">Category <span class="text-danger">*</span></label>
+                    <select name="CategoryId" class="edit-form-control edit-form-select" id="createCategorySelect">
+                        <option value="">-- Select category --</option>
+                        ${categoriesHtml}
+                    </select>
+                    <span class="edit-form-error-wrap"></span>
+                </div>
+            </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Description</label>
+                <textarea name="Description" class="edit-form-control edit-form-textarea" placeholder="Enter description..."></textarea>
+            </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Main Image URL</label>
+                <input type="text" name="ImageUrl" class="edit-form-control" placeholder="https://..." />
+            </div>
+            <div class="edit-form-group">
+                <label class="edit-form-label">Collection Image URLs (comma-separated)</label>
+                <input type="text" name="GalleryImages" class="edit-form-control" placeholder="url1, url2, url3" />
+            </div>
+            <div class="edit-form-checkbox-row">
+                <input type="checkbox" name="IsActiveBool" id="createIsActive" checked />
+                <label for="createIsActive">Active</label>
+            </div>
+        </form>
+    `;
+}
+
+function closeCreateModal() {
+    var modal = document.getElementById('createModal');
+    modal.classList.remove('show');
+}
+
+function submitCreateModal() {
+    var form = document.getElementById('createProductForm');
+    if (!form) return;
+
+    var alertEl = document.getElementById('createFormAlert');
+    if (alertEl) alertEl.innerHTML = '';
+
+    var submitBtn = document.getElementById('createModalSubmit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+
+    var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    var token = tokenInput ? tokenInput.value : '';
+
+    var formData = new FormData(form);
+    formData.append('__RequestVerificationToken', token);
+
+    var params = new URLSearchParams();
+    formData.forEach(function(value, key) {
+        params.append(key, value);
+    });
+
+    fetch('/Admin/Products/CreateAjax', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'RequestVerificationToken': token
+        },
+        body: params.toString()
+    })
+    .then(function(response) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Product';
+
+        if (!response.ok) {
+            throw new Error('Server error: ' + response.status);
+        }
+
+        return response.json();
+    })
+    .then(function(result) {
+        if (result.success) {
+            showToast('Product created successfully!', 'success');
+            setTimeout(function() { window.location.href = '/Admin/Products'; }, 1200);
+        } else {
+            showToast(result.message || 'Failed to create product.', 'error');
+            if (alertEl) {
+                alertEl.innerHTML = '<div class="edit-modal-alert alert-error"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' + (result.message || 'Failed to create product.') + '</div>';
+            }
+        }
+    })
+    .catch(function(err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Product';
+        showToast('An error occurred: ' + err.message, 'error');
+        if (alertEl) {
+            alertEl.innerHTML = '<div class="edit-modal-alert alert-error"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>An error occurred. Please try again.</div>';
+        }
+    });
+}
+
+// Close modals on overlay click
+document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditModal();
+});
+document.getElementById('createModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCreateModal();
+});
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeEditModal();
+        closeCreateModal();
+    }
+});
+</script>

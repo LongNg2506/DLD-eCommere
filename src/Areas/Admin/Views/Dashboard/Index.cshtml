@@ -1,0 +1,351 @@
+@model MyProject.Areas.Admin.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Page Header -->
+<div class="admin-dashboard-header">
+    <div class="admin-dashboard-header-left">
+        <h1 class="admin-dashboard-title">Dashboard</h1>
+        <p class="admin-dashboard-subtitle">Welcome back! Here's an overview of your store.</p>
+    </div>
+</div>
+
+<!-- Overview Cards -->
+<div class="admin-overview-grid">
+    <div class="admin-overview-card">
+        <div class="admin-overview-icon" style="background:rgba(56,89,78,0.1);color:#38594e;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+        </div>
+        <div class="admin-overview-info">
+            <div class="admin-overview-value">@Model.TotalProducts</div>
+            <div class="admin-overview-label">Total Products</div>
+            <div class="admin-overview-sub">@Model.ActiveProducts active</div>
+        </div>
+    </div>
+
+    <div class="admin-overview-card">
+        <div class="admin-overview-icon" style="background:rgba(40,167,69,0.1);color:#28a745;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+        </div>
+        <div class="admin-overview-info">
+            <div class="admin-overview-value">@Model.TotalCategories</div>
+            <div class="admin-overview-label">Categories</div>
+        </div>
+    </div>
+
+    <div class="admin-overview-card">
+        <div class="admin-overview-icon" style="background:rgba(100,149,237,0.1);color:#6495ed;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        </div>
+        <div class="admin-overview-info">
+            <div class="admin-overview-value">@Model.TotalUsers</div>
+            <div class="admin-overview-label">Total Customers</div>
+            <div class="admin-overview-sub">@Model.ActiveUsers active</div>
+        </div>
+    </div>
+
+    <div class="admin-overview-card">
+        <div class="admin-overview-icon" style="background:rgba(255,159,28,0.1);color:#ff9f1c;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+        </div>
+        <div class="admin-overview-info">
+            <div class="admin-overview-value">$@Model.TotalInventoryValue.ToString("N0")</div>
+            <div class="admin-overview-label">Inventory Value</div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="admin-charts-grid">
+    <!-- Donut Chart: Products by Category -->
+    <div class="admin-chart-card">
+        <div class="admin-chart-header">
+            <h3 class="admin-chart-title">Products by Category</h3>
+        </div>
+        <div class="admin-chart-body">
+            <div class="admin-donut-wrap">
+                <canvas id="categoryChart" height="240"></canvas>
+            </div>
+            <div class="admin-donut-legend" id="categoryLegend"></div>
+        </div>
+    </div>
+
+    <!-- Bar Chart: Category Distribution -->
+    <div class="admin-chart-card">
+        <div class="admin-chart-header">
+            <h3 class="admin-chart-title">Inventory Overview</h3>
+        </div>
+        <div class="admin-chart-body">
+            <canvas id="inventoryChart" height="280"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Grid: Top Selling + Low Stock -->
+<div class="admin-bottom-grid">
+    <!-- Top Selling Products -->
+    <div class="admin-list-card">
+        <div class="admin-list-header">
+            <h3 class="admin-list-title">Top Selling Watches</h3>
+            <a href="/Admin/Products" class="admin-list-link">View All</a>
+        </div>
+        <div class="admin-list-body">
+            @if (Model.TopProducts.Any())
+            {
+                @foreach (var p in Model.TopProducts)
+                {
+                    <div class="admin-list-item">
+                        <div class="admin-list-item-img">
+                            @if (!string.IsNullOrEmpty(p.ImageUrl))
+                            {
+                                <img src="@p.ImageUrl" alt="@p.Name" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                                <div class="admin-list-item-placeholder" style="display:none;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="admin-list-item-placeholder" style="display:flex;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                </div>
+                            }
+                        </div>
+                        <div class="admin-list-item-info">
+                            <div class="admin-list-item-name">@p.Name</div>
+                            <div class="admin-list-item-meta">@p.CategoryName</div>
+                        </div>
+                        <div class="admin-list-item-right">
+                            <div class="admin-list-item-price">$@p.SalePrice.ToString("N2")</div>
+                            @if (p.Discount > 0)
+                            {
+                                <span class="admin-badge admin-badge-danger">-@p.Discount%</span>
+                            }
+                            <div class="admin-list-item-stock">
+                                @if (p.StockQuantity == 0)
+                                {
+                                    <span class="admin-badge admin-badge-danger">Out</span>
+                                }
+                                else if (p.StockQuantity <= 5)
+                                {
+                                    <span class="admin-badge admin-badge-warning">@p.StockQuantity left</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-badge admin-badge-success">@p.StockQuantity in stock</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="admin-list-empty">No products found.</div>
+            }
+        </div>
+    </div>
+
+    <!-- Low Stock Products -->
+    <div class="admin-list-card">
+        <div class="admin-list-header">
+            <h3 class="admin-list-title">
+                Low Stock Products
+                @if (Model.LowStockProducts.Count > 0)
+                {
+                    <span class="admin-badge admin-badge-warning" style="margin-left:8px;">@Model.LowStockProducts.Count</span>
+                }
+            </h3>
+            <a href="/Admin/Products" class="admin-list-link">Manage</a>
+        </div>
+        <div class="admin-list-body">
+            @if (Model.LowStockProducts.Any())
+            {
+                @foreach (var p in Model.LowStockProducts)
+                {
+                    <div class="admin-list-item">
+                        <div class="admin-list-item-img">
+                            @if (!string.IsNullOrEmpty(p.ImageUrl))
+                            {
+                                <img src="@p.ImageUrl" alt="@p.Name" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                                <div class="admin-list-item-placeholder" style="display:none;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="admin-list-item-placeholder" style="display:flex;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                </div>
+                            }
+                        </div>
+                        <div class="admin-list-item-info">
+                            <div class="admin-list-item-name">@p.Name</div>
+                            <div class="admin-list-item-meta">@p.CategoryName</div>
+                        </div>
+                        <div class="admin-list-item-right">
+                            <div class="admin-list-item-price">$@p.SalePrice.ToString("N2")</div>
+                            @if (p.StockQuantity == 0)
+                            {
+                                <span class="admin-badge admin-badge-danger">Out of Stock</span>
+                            }
+                            else
+                            {
+                                <span class="admin-badge admin-badge-warning">@p.StockQuantity left</span>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="admin-list-empty">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--admin-text-muted);margin-bottom:8px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <p>All products are well stocked!</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Stock Alerts -->
+@if (Model.OutOfStockProducts > 0)
+{
+    <div class="admin-alert-banner">
+        <div class="admin-alert-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+        <div class="admin-alert-content">
+            <strong>@Model.OutOfStockProducts product(s)</strong> are out of stock and need attention.
+        </div>
+        <a href="/Admin/Products" class="admin-alert-action">Restock Now</a>
+    </div>
+}
+
+@section Scripts {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // === Category Donut Chart ===
+    var categoryLabels = [@Html.Raw(string.Join(",", Model.CategoryStats.Select(c => $"'{c.Name}'")))];
+    var categoryCounts = [@Html.Raw(string.Join(",", Model.CategoryStats.Select(c => c.ProductCount)))];
+
+    var colors = ['#38594e', '#a9cec2', '#6495ed', '#ff9f1c', '#e63946', '#28a745', '#9b59b6', '#f39c12'];
+    var ctxDonut = document.getElementById('categoryChart');
+    if (ctxDonut && categoryCounts.length > 0) {
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    data: categoryCounts,
+                    backgroundColor: colors,
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '65%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: { family: "'Inter', sans-serif", size: 12 },
+                        bodyFont: { family: "'Inter', sans-serif", size: 12 },
+                        padding: 10,
+                        cornerRadius: 8
+                    }
+                }
+            }
+        });
+
+        // Render legend manually
+        var legendContainer = document.getElementById('categoryLegend');
+        if (legendContainer) {
+            var legendHtml = '';
+            categoryLabels.forEach(function(label, i) {
+                var count = categoryCounts[i];
+                var total = categoryCounts.reduce(function(a, b) { return a + b; }, 0);
+                var pct = total > 0 ? Math.round(count / total * 100) : 0;
+                legendHtml += '<div class="admin-donut-legend-item">'
+                    + '<span class="admin-donut-legend-dot" style="background:' + colors[i % colors.length] + '"></span>'
+                    + '<span class="admin-donut-legend-name">' + label + '</span>'
+                    + '<span class="admin-donut-legend-count">' + count + ' (' + pct + '%)</span>'
+                    + '</div>';
+            });
+            legendContainer.innerHTML = legendHtml;
+        }
+    }
+
+    // === Inventory Bar Chart ===
+    var lowStockCount = @Model.LowStockCount;
+    var outOfStockCount = @Model.OutOfStockProducts;
+    var activeCount = @Model.ActiveProducts;
+    var inActiveCount = @Model.TotalProducts - @Model.ActiveProducts;
+
+    var ctxBar = document.getElementById('inventoryChart');
+    if (ctxBar) {
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Active', 'Low Stock', 'Out of Stock', 'Inactive'],
+                datasets: [{
+                    label: 'Products',
+                    data: [activeCount, lowStockCount, outOfStockCount, inActiveCount],
+                    backgroundColor: ['#38594e', '#ff9f1c', '#e63946', '#aca9bb'],
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    barThickness: 28
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: { family: "'Inter', sans-serif", size: 12 },
+                        bodyFont: { family: "'Inter', sans-serif", size: 12 },
+                        padding: 10,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            font: { family: "'Inter', sans-serif", size: 11 },
+                            color: '#aca9bb',
+                            stepSize: 1,
+                            callback: function(value) { if (Number.isInteger(value)) return value; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { family: "'Inter', sans-serif", size: 11 },
+                            color: '#5f5c6d'
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+}

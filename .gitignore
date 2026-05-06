@@ -1,0 +1,25 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.rsuser
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+Thumbs.db
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+
+# Secrets
+appsettings.*.json
+!appsettings.json
+secrets.json
