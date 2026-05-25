@@ -8,26 +8,26 @@ a.navbar-brand {
 }
 
 a {
-  color: #0077cc;
+  color: var(--accent);
 }
 
 .btn-primary {
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  background-color: var(--accent);
+  border-color: var(--accent-dark);
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  background-color: var(--accent);
+  border-color: var(--accent-dark);
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--border);
 }
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border);
 }
 
 .box-shadow {
@@ -61,29 +61,29 @@ main {
   padding: 56px 0 24px;
   line-height: normal;
   white-space: normal;
-  background: var(--dark-bg, #18331f);
-  color: rgba(255, 255, 255, 0.75);
+  background: var(--footer-bg);
+  color: var(--footer-text);
 }
 
 .footer h4,
 .footer h5 {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--footer-text);
   font-weight: 700;
 }
 
 .footer a {
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--footer-text);
   text-decoration: none;
 }
 
 .footer a:hover {
-  color: #4caf50;
+  color: var(--accent);
 }
 
 .footer-bottom {
   margin-top: 36px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--border);
 }
 
 .site-main {

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet restore *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet ef *)",
+      "Bash(dotnet run *)",
+      "Bash(findstr :5000)",
+      "Bash(taskkill /F /PID 14540)",
+      "Bash(set ASPNETCORE_ENVIRONMENT=Development)",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 5000, 5001 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess\")",
+      "Bash(taskkill /F /PID 20036)",
+      "Bash(cmd /c \"set ASPNETCORE_ENVIRONMENT=Development && dotnet run --project 'd:/LongNg\\(Aptec\\)/DLD-eCommere/src/MyProject.csproj' --urls 'http://localhost:5000' --no-launch-profile\")",
+      "Bash(powershell -Command \"Get-Process MyProject -ErrorAction SilentlyContinue | Stop-Process -Force\")"
+    ]
+  }
+}

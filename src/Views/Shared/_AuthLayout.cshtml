@@ -8,6 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('chrono-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
     <style>
         body {
             display: flex;
@@ -21,7 +27,7 @@
             align-items: center;
             justify-content: center;
             padding: 40px 20px;
-            background: var(--bg-secondary);
+            background: var(--bg-primary);
             min-height: calc(100vh - 120px);
         }
 
@@ -33,6 +39,10 @@
             width: 100%;
             max-width: 440px;
             box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        [data-theme="dark"] .auth-card {
+            background: #474554;
         }
 
         .auth-card-header {
@@ -175,6 +185,17 @@
         .error-summary svg {
             flex-shrink: 0;
             margin-top: 1px;
+        }
+
+        .success-summary {
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.88rem;
+            line-height: 1.5;
         }
 
         .btn-auth-primary {

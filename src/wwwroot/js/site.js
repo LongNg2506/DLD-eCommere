@@ -1,12 +1,6 @@
 // =============================================
 // THEME TOGGLE
 // =============================================
-(function initTheme() {
-    const savedTheme = localStorage.getItem('chrono-theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-})();
-
 function updateThemeIcon(theme) {
     const lightIcon = document.getElementById('themeIconLight');
     const darkIcon = document.getElementById('themeIconDark');
@@ -16,13 +10,23 @@ function updateThemeIcon(theme) {
     }
 }
 
-document.getElementById('themeToggle')?.addEventListener('click', function () {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('chrono-theme', next);
-    updateThemeIcon(next);
+function initTheme() {
+    const savedTheme = localStorage.getItem('chrono-theme') || 'light';
+    updateThemeIcon(savedTheme);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+
+    document.getElementById('themeToggle')?.addEventListener('click', function () {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('chrono-theme', next);
+        updateThemeIcon(next);
+    });
 });
+
 
 // =============================================
 // CART DRAWER (Server-side)

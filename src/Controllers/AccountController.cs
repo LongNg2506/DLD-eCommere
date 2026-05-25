@@ -22,6 +22,30 @@ public class AccountController : Controller
 
     [HttpGet]
     [AllowAnonymous]
+    public IActionResult ForgotPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            ModelState.AddModelError("", "Email is required.");
+            return View();
+        }
+
+        // Trong thực tế, đây là nơi gọi service để gửi email reset password
+        // Hiện tại chúng ta sẽ giả lập là đã gửi email thành công
+        ViewBag.Message = "If an account with this email exists, a password reset link has been sent.";
+        return View();
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
     public IActionResult Login(string? returnUrl = null)
     {
         if (User.Identity?.IsAuthenticated == true)

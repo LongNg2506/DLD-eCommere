@@ -352,12 +352,12 @@ img {
 }
 
 .header-nav a {
-  color: #aca9bb !important;
+  color: var(--text-muted) !important;
 }
 
 .header-nav-link {
   padding: 8px 16px;
-  color: #aca9bb !important;
+  color: var(--text-muted) !important;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -3545,9 +3545,9 @@ img {
   height: 46px;
   display: flex;
   align-items: center;
-  border: 2px solid #b7d7ac;
+  border: 2px solid var(--border);
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--card-bg);
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(24, 51, 31, 0.12);
 }
@@ -3559,12 +3559,12 @@ img {
   outline: none;
   padding: 0 56px 0 18px;
   font-size: 0.95rem;
-  color: #18331f;
+  color: var(--text-primary);
   background: transparent;
 }
 
 .header-search-input::placeholder {
-  color: rgba(24, 51, 31, 0.55);
+  color: var(--text-muted);
 }
 
 .header-search-submit {
@@ -3576,8 +3576,8 @@ img {
   transform: translateY(-50%);
   border: none;
   border-radius: 50%;
-  background: #4caf50;
-  color: #ffffff;
+  background: var(--accent);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3585,7 +3585,7 @@ img {
 }
 
 .header-search-submit:hover {
-  background: #3fa244;
+  background: var(--accent-dark);
 }
 
 /* Mobile: không cho form bung quá rộng */
