@@ -123,6 +123,32 @@ public class AuthService : IAuthService
         return true;
     }
 
+    public async Task<string?> GenerateResetTokenAsync(string email)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.Email == email.Trim().ToLower());
+        if (user == null) return null;
+
+        var token = Guid.NewGuid().ToString("N");
+        user.ResetToken = token;
+        user.ResetTokenExpiry = DateTime.Now.AddHours(2);
+        await _db.SaveChangesAsync();
+
+        return token;
+    }
+
+    public async Task<bool> ResetPasswordAsync(string token, string newPassword)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.ResetToken == token && x.ResetTokenExpiry > DateTime.Now);
+        if (user == null) return false;
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.ResetToken = null;
+        user.ResetTokenExpiry = null;
+        await _db.SaveChangesAsync();
+
+        return true;
+    }
+
     public async Task<List<UserOrderDto>> GetOrdersByUserIdAsync(int userId)
     {
         return await _db.Orders

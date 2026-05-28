@@ -11,7 +11,11 @@
       "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 5000, 5001 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess\")",
       "Bash(taskkill /F /PID 20036)",
       "Bash(cmd /c \"set ASPNETCORE_ENVIRONMENT=Development && dotnet run --project 'd:/LongNg\\(Aptec\\)/DLD-eCommere/src/MyProject.csproj' --urls 'http://localhost:5000' --no-launch-profile\")",
-      "Bash(powershell -Command \"Get-Process MyProject -ErrorAction SilentlyContinue | Stop-Process -Force\")"
+      "Bash(powershell -Command \"Get-Process MyProject -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(dotnet new *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet test *)",
+      "Bash(dotnet sln *)"
     ]
   }
 }

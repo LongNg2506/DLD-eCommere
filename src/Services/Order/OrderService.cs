@@ -18,101 +18,114 @@ public class OrderService : IOrderService
 
     public async Task<OrderResult> CreateOrderAsync(CreateOrderRequest request)
     {
-        var cartId = await GetCartIdAsync(request.SessionId, request.UserId);
-        if (cartId == null)
-            return new OrderResult { Success = false, Message = "Cart not found." };
-
-        var cartItems = await _db.CartSessionItems
-            .Include(i => i.Product)
-            .Where(i => i.CartSessionId == cartId)
-            .ToListAsync();
-
-        if (!cartItems.Any())
-            return new OrderResult { Success = false, Message = "Cart is empty." };
-
-        foreach (var item in cartItems)
+        using var transaction = await _db.Database.BeginTransactionAsync();
+        try
         {
-            if (item.Product == null || item.Product.StockQuantity < item.Quantity)
+            var cartId = await GetCartIdAsync(request.SessionId, request.UserId);
+            if (cartId == null)
+                return new OrderResult { Success = false, Message = "Cart not found." };
+
+            var cartItems = await _db.CartSessionItems
+                .Include(i => i.Product)
+                .Where(i => i.CartSessionId == cartId)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+                return new OrderResult { Success = false, Message = "Cart is empty." };
+
+            // Kiểm tra và trừ tồn kho ngay lập tức để tránh Race Condition
+            foreach (var item in cartItems)
             {
-                var name = item.Product?.Name ?? "Unknown";
-                var available = item.Product?.StockQuantity ?? 0;
-                return new OrderResult
+                if (item.Product == null || item.Product.StockQuantity < item.Quantity)
                 {
-                    Success = false,
-                    Message = $"Product \"{name}\" only has {available} items in stock. Please adjust your order."
-                };
+                    var name = item.Product?.Name ?? "Unknown";
+                    var available = item.Product?.StockQuantity ?? 0;
+                    return new OrderResult
+                    {
+                        Success = false,
+                        Message = $"Product \"{name}\" only has {available} items in stock. Please adjust your order."
+                    };
+                }
+                // Trừ kho ngay tại đây
+                item.Product!.StockQuantity -= item.Quantity;
             }
-        }
 
-        var invoiceNumber = await GenerateInvoiceNumberAsync();
-        var order = new OrderModel
-        {
-            UserId = request.UserId ?? 0,
-            OrderDate = DateTime.Now,
-            Status = "Pending",
-            TotalAmount = cartItems.Sum(i => (i.Product!.Price * (1 - i.Product.Discount / 100)) * i.Quantity),
-            ShippingAddress = request.ShippingAddress,
-            Phone = request.Phone,
-            Note = request.Note,
-            CustomerName = request.CustomerName,
-            PaymentMethod = request.PaymentMethod,
-            PaymentStatus = "Pending",
-            InvoiceNumber = invoiceNumber,
-            CreatedAt = DateTime.Now
-        };
-
-        _db.Orders.Add(order);
-        await _db.SaveChangesAsync();
-
-        foreach (var item in cartItems)
-        {
-            if (item.Product == null) continue;
-            _db.OrderItems.Add(new OrderItem
+            var invoiceNumber = await GenerateInvoiceNumberAsync();
+            var order = new OrderModel
             {
-                OrderId = order.Id,
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-                UnitPrice = item.Product.Price * (1 - item.Product.Discount / 100),
-                ProductName = item.Product.Name
-            });
-        }
-
-        _db.OrderStatusHistories.Add(new OrderStatusHistory
-        {
-            OrderId = order.Id,
-            Status = "Pending",
-            Note = "Order placed",
-            UpdatedBy = request.CustomerName,
-            CreatedAt = DateTime.Now
-        });
-
-        if (request.PaymentMethod != "COD")
-        {
-            _db.Payments.Add(new PaymentModel
-            {
-                OrderId = order.Id,
+                UserId = request.UserId,
+                OrderDate = DateTime.Now,
+                Status = "Pending",
+                TotalAmount = cartItems.Sum(i => (i.Product!.Price * (1 - i.Product.Discount / 100)) * i.Quantity),
+                ShippingAddress = request.ShippingAddress,
+                Phone = request.Phone,
+                Note = request.Note,
+                CustomerName = request.CustomerName,
                 PaymentMethod = request.PaymentMethod,
                 PaymentStatus = "Pending",
-                Amount = order.TotalAmount,
+                InvoiceNumber = invoiceNumber,
+                CreatedAt = DateTime.Now
+            };
+
+            _db.Orders.Add(order);
+            await _db.SaveChangesAsync();
+
+            foreach (var item in cartItems)
+            {
+                if (item.Product == null) continue;
+                _db.OrderItems.Add(new OrderItem
+                {
+                    OrderId = order.Id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.Product.Price * (1 - item.Product.Discount / 100),
+                    ProductName = item.Product.Name
+                });
+            }
+
+            _db.OrderStatusHistories.Add(new OrderStatusHistory
+            {
+                OrderId = order.Id,
+                Status = "Pending",
+                Note = "Order placed",
+                UpdatedBy = request.CustomerName,
                 CreatedAt = DateTime.Now
             });
+
+            if (request.PaymentMethod != "COD")
+            {
+                _db.Payments.Add(new PaymentModel
+                {
+                    OrderId = order.Id,
+                    PaymentMethod = request.PaymentMethod,
+                    PaymentStatus = "Pending",
+                    Amount = order.TotalAmount,
+                    CreatedAt = DateTime.Now
+                });
+            }
+
+            _db.CartSessionItems.RemoveRange(cartItems);
+
+            var cart = await _db.CartSessions.FindAsync(cartId);
+            if (cart != null)
+                _db.CartSessions.Remove(cart);
+
+            await _db.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return new OrderResult
+            {
+                Success = true,
+                Message = "Order placed successfully!",
+                OrderId = order.Id,
+                InvoiceNumber = invoiceNumber
+            };
         }
-
-        _db.CartSessionItems.RemoveRange(cartItems);
-
-        var cart = await _db.CartSessions.FindAsync(cartId);
-        if (cart != null)
-            _db.CartSessions.Remove(cart);
-
-        await _db.SaveChangesAsync();
-
-        return new OrderResult
+        catch (Exception ex)
         {
-            Success = true,
-            Message = "Order placed successfully!",
-            OrderId = order.Id,
-            InvoiceNumber = invoiceNumber
-        };
+            await transaction.RollbackAsync();
+            return new OrderResult { Success = false, Message = $"An error occurred: {ex.Message}" };
+        }
     }
 
     public async Task<OrderDetailDto?> GetOrderAsync(int orderId, int? userId)
@@ -126,6 +139,9 @@ public class OrderService : IOrderService
             return null;
 
         if (userId != null && order.UserId != userId)
+            return null;
+
+        if (userId == null && order.UserId != null)
             return null;
 
         return new OrderDetailDto
@@ -220,9 +236,8 @@ public class OrderService : IOrderService
     public async Task<string> GenerateInvoiceNumberAsync()
     {
         var today = DateTime.Now.ToString("yyyyMMdd");
-        var count = await _db.Orders
-            .CountAsync(o => o.InvoiceNumber != null && o.InvoiceNumber.StartsWith("INV-" + today));
-        return $"INV-{today}-{(count + 1):D4}";
+        var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper();
+        return $"INV-{today}-{uniqueId}";
     }
 
     private async Task<int?> GetCartIdAsync(string sessionId, int? userId)

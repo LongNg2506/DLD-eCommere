@@ -17,7 +17,7 @@ public class ShopService : IShopService
     {
         var query = _db.Products
             .Include(x => x.Category)
-            .Where(x => x.IsActive)
+            .Where(x => x.IsActive && !x.IsDeleted)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(filter.Keyword))
@@ -89,7 +89,7 @@ public class ShopService : IShopService
     {
         return await _db.Products
             .Include(x => x.Category)
-            .Where(x => x.Id == id && x.IsActive)
+            .Where(x => x.Id == id && x.IsActive && !x.IsDeleted)
             .Select(x => new ShopProductDto
             {
                 Id = x.Id,
@@ -115,7 +115,7 @@ public class ShopService : IShopService
             {
                 Id = x.Id,
                 Name = x.Name,
-                ProductCount = x.Products.Count(p => p.IsActive)
+                ProductCount = x.Products.Count(p => p.IsActive && !p.IsDeleted)
             })
             .ToListAsync();
     }

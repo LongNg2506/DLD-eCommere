@@ -13,7 +13,7 @@ public class OrderAdminService : IOrderAdminService
         _db = db;
     }
 
-    public async Task<OrderAdminIndexViewModel> GetIndexAsync(string? status, string? keyword)
+    public async Task<OrderAdminIndexViewModel> GetIndexAsync(string? status, string? keyword, int page = 1, int pageSize = 10)
     {
         var query = _db.Orders.Include(o => o.User).AsQueryable();
 
@@ -27,8 +27,11 @@ public class OrderAdminService : IOrderAdminService
                 (o.Phone != null && o.Phone.Contains(keyword)) ||
                 (o.InvoiceNumber != null && o.InvoiceNumber.Contains(keyword)));
 
+        var total = await query.CountAsync();
         var orders = await query
             .OrderByDescending(o => o.OrderDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(o => new OrderAdminItem
             {
                 Id = o.Id,
@@ -42,7 +45,6 @@ public class OrderAdminService : IOrderAdminService
             })
             .ToListAsync();
 
-        var total = await _db.Orders.CountAsync();
         var pending = await _db.Orders.CountAsync(o => o.Status == "Pending");
         var confirmed = await _db.Orders.CountAsync(o => o.Status == "Confirmed");
         var shipped = await _db.Orders.CountAsync(o => o.Status == "Shipped");
@@ -53,6 +55,8 @@ public class OrderAdminService : IOrderAdminService
         {
             Orders = orders,
             TotalCount = total,
+            Page = page,
+            PageSize = pageSize,
             PendingCount = pending,
             ConfirmedCount = confirmed,
             ShippedCount = shipped,
@@ -160,25 +164,6 @@ public class OrderAdminService : IOrderAdminService
             UpdatedBy = updatedBy,
             CreatedAt = DateTime.Now
         });
-
-        await _db.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> DeductStockAsync(int id)
-    {
-        var items = await _db.OrderItems
-            .Include(i => i.Product)
-            .Where(i => i.OrderId == id)
-            .ToListAsync();
-
-        foreach (var item in items)
-        {
-            if (item.Product != null)
-            {
-                item.Product.StockQuantity -= item.Quantity;
-            }
-        }
 
         await _db.SaveChangesAsync();
         return true;

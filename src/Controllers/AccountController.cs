@@ -38,10 +38,52 @@ public class AccountController : Controller
             return View();
         }
 
-        // Trong thực tế, đây là nơi gọi service để gửi email reset password
-        // Hiện tại chúng ta sẽ giả lập là đã gửi email thành công
+        var token = await _authService.GenerateResetTokenAsync(email);
+        if (token != null)
+        {
+            // Trong thực tế: Gửi email chứa link /Account/ResetPassword?token=...
+            // Ở đây giả lập bằng cách truyền token qua ViewBag để user biết trong khi dev
+            ViewBag.DebugToken = token;
+        }
+
         ViewBag.Message = "If an account with this email exists, a password reset link has been sent.";
         return View();
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ResetPassword(string token)
+    {
+        if (string.IsNullOrWhiteSpace(token)) return RedirectToAction("ForgotPassword");
+        ViewBag.Token = token;
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(string token, string newPassword, string confirmPassword)
+    {
+        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(newPassword))
+            return RedirectToAction("ForgotPassword");
+
+        if (newPassword != confirmPassword)
+        {
+            ModelState.AddModelError("", "Passwords do not match.");
+            ViewBag.Token = token;
+            return View();
+        }
+
+        var success = await _authService.ResetPasswordAsync(token, newPassword);
+        if (!success)
+        {
+            ModelState.AddModelError("", "Invalid or expired token.");
+            ViewBag.Token = token;
+            return View();
+        }
+
+        TempData["Success"] = "Password has been reset successfully. You can now login.";
+        return RedirectToAction("Login");
     }
 
     [HttpGet]
@@ -158,22 +200,6 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    [Authorize]
-    public async Task<IActionResult> DebugUser()
-    {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        int.TryParse(userIdClaim, out var userId);
-        var orders = await _authService.GetOrdersByUserIdAsync(userId);
-        return Json(new
-        {
-            claimValue = userIdClaim,
-            parsedUserId = userId,
-            isAuthenticated = User.Identity?.IsAuthenticated,
-            userName = User.Identity?.Name,
-            ordersCount = orders.Count,
-            orders = orders
-        });
-    }
 
     [HttpGet]
     [AllowAnonymous]

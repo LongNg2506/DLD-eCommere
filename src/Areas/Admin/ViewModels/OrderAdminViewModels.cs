@@ -4,6 +4,9 @@ public class OrderAdminIndexViewModel
 {
     public List<OrderAdminItem> Orders { get; set; } = new();
     public int TotalCount { get; set; }
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
     public int PendingCount { get; set; }
     public int ConfirmedCount { get; set; }
     public int ShippedCount { get; set; }

@@ -55,19 +55,6 @@ public class OrdersController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
 
-    [Authorize(Roles = "Admin")]
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeductStock(int id)
-    {
-        var success = await _service.DeductStockAsync(id);
-        if (success)
-            TempData["Success"] = "Stock deducted successfully.";
-        else
-            TempData["Error"] = "Failed to deduct stock.";
-        return RedirectToAction(nameof(Details), new { id });
-    }
-
     public async Task<IActionResult> Invoice(int id)
     {
         var model = await _service.GetDetailAsync(id);

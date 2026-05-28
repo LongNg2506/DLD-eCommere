@@ -1,6 +1,6 @@
 CLAUDE.md
 Tổng quan dự án
-Đây là template ASP.NET Core .NET 10 cho dự án web/app quản trị hoặc e-commerce, sử dụng C#, SQL Server, Entity Framework Core, ASP.NET Core MVC hoặc Web API, Razor View nếu làm MVC, và kiến trúc theo pattern nhiều feature.
+Đây là template ASP.NET Core .NET 9.0 cho dự án web/app quản trị hoặc e-commerce, sử dụng C#, SQL Server, Entity Framework Core, ASP.NET Core MVC hoặc Web API, Razor View nếu làm MVC, và kiến trúc theo pattern nhiều feature.
 Mỗi feature nên có cấu trúc riêng gồm:
 Entity / Model
 DTO hoặc ViewModel
@@ -14,7 +14,7 @@ Mục tiêu của dự án là giữ code rõ ràng, dễ bảo trì, dễ mở 
 ---
 Tech Stack
 Category	Choice
-Framework	ASP.NET Core .NET 10
+Framework	ASP.NET Core .NET 9.0
 Language	C#
 Web Pattern	ASP.NET Core MVC hoặc ASP.NET Core Web API
 View Engine	Razor View / Razor Pages nếu cần
@@ -472,7 +472,7 @@ public class ProductsController : ControllerBase
 ```
 ---
 Entity Framework Core conventions
-Với .NET 10, ưu tiên EF Core 10.x
+Với .NET 9.0, ưu tiên EF Core 9.x
 Dùng `Microsoft.EntityFrameworkCore.SqlServer`
 Dùng `Microsoft.EntityFrameworkCore.Design` để tạo migration
 Không dùng `DateTime.Now` trong `HasData`

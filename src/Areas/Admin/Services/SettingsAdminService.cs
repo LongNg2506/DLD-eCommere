@@ -9,7 +9,7 @@ public class SettingsAdminService : ISettingsAdminService
 
     public SettingsAdminService(IWebHostEnvironment env)
     {
-        _settingsPath = Path.Combine(env.ContentRootPath, "..", "wwwroot", "data", "settings.json");
+        _settingsPath = Path.Combine(env.WebRootPath, "data", "settings.json");
     }
 
     public SettingsAdminViewModel GetSettings()

@@ -37,5 +37,7 @@ public class Product
 
     public DateTime? UpdatedAt { get; set; }
 
+    public bool IsDeleted { get; set; } = false;
+
     public Category? Category { get; set; }
 }

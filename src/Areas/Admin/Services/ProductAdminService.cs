@@ -15,9 +15,9 @@ public class ProductAdminService : IProductAdminService
         _db = db;
     }
 
-    public async Task<ProductAdminIndexViewModel> GetIndexAsync(string? keyword, int? categoryId, bool? isActive)
+    public async Task<ProductAdminIndexViewModel> GetIndexAsync(string? keyword, int? categoryId, bool? isActive, int page = 1, int pageSize = 10)
     {
-        var query = _db.Products.Include(p => p.Category).AsQueryable();
+        var query = _db.Products.Include(p => p.Category).Where(p => !p.IsDeleted).AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(keyword))
             query = query.Where(p => p.Name.Contains(keyword));
@@ -28,8 +28,11 @@ public class ProductAdminService : IProductAdminService
         if (isActive.HasValue)
             query = query.Where(p => p.IsActive == isActive.Value);
 
+        var total = await query.CountAsync();
         var products = await query
             .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(p => new ProductAdminItem
             {
                 Id = p.Id,
@@ -44,7 +47,6 @@ public class ProductAdminService : IProductAdminService
             })
             .ToListAsync();
 
-        var total = await _db.Products.CountAsync();
         var active = await _db.Products.CountAsync(p => p.IsActive);
         var categories = await _db.Categories
             .OrderBy(c => c.Name)
@@ -55,6 +57,8 @@ public class ProductAdminService : IProductAdminService
         {
             Products = products,
             TotalCount = total,
+            Page = page,
+            PageSize = pageSize,
             ActiveCount = active,
             InactiveCount = total - active,
             Categories = categories
@@ -165,7 +169,8 @@ public class ProductAdminService : IProductAdminService
         var product = await _db.Products.FindAsync(id);
         if (product == null) return false;
 
-        _db.Products.Remove(product);
+        product.IsDeleted = true;
+        product.UpdatedAt = DateTime.Now;
         await _db.SaveChangesAsync();
         return true;
     }

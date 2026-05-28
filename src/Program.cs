@@ -10,10 +10,7 @@ using MyProject.Services.Cart;
 using MyProject.Services.Order;
 using MyProject.Services.Payment;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-{
-    EnvironmentName = Environments.Development
-});
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();

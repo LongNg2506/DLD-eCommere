@@ -36,6 +36,7 @@ public class CartController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddItem(int productId, int quantity = 1)
     {
         var result = await _cartService.AddItemAsync(GetSessionId(), GetUserId(), productId, quantity);
@@ -45,6 +46,7 @@ public class CartController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateQuantity(int productId, int quantity)
     {
         var result = await _cartService.UpdateQuantityAsync(GetSessionId(), GetUserId(), productId, quantity);
@@ -54,6 +56,7 @@ public class CartController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveItem(int productId)
     {
         var success = await _cartService.RemoveItemAsync(GetSessionId(), GetUserId(), productId);
@@ -63,6 +66,7 @@ public class CartController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> ClearCart()
     {
         await _cartService.ClearCartAsync(GetSessionId(), GetUserId());
