@@ -166,4 +166,37 @@ public class AuthService : IAuthService
             })
             .ToListAsync();
     }
+
+    public async Task<UserDto?> FindOrCreateExternalUserAsync(string email, string fullName)
+    {
+        var normalizedEmail = email.Trim().ToLower();
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.Email == normalizedEmail);
+
+        if (user == null)
+        {
+            user = new User
+            {
+                FullName = fullName.Trim(),
+                Email = normalizedEmail,
+                PasswordHash = Guid.NewGuid().ToString(), // Random password for external users
+                Role = "Customer",
+                IsActive = true,
+                CreatedAt = DateTime.Now
+            };
+
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
+        }
+
+        return new UserDto
+        {
+            Id = user.Id,
+            FullName = user.FullName,
+            Email = user.Email,
+            Phone = user.Phone,
+            Address = user.Address,
+            Role = user.Role,
+            IsActive = user.IsActive
+        };
+    }
 }

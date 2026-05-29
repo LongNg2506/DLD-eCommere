@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('chrono-theme') || 'light';
+            const savedTheme = localStorage.getItem('dld-theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();
     </script>
@@ -43,6 +43,47 @@
 
         [data-theme="dark"] .auth-card {
             background: #474554;
+        }
+
+        [data-theme="dark"] .auth-title {
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .form-control {
+            background: #1a1a1a;
+            color: #aca9bb;
+            border-color: #474554;
+        }
+
+        [data-theme="dark"] .form-label,
+        [data-theme="dark"] .auth-subtitle,
+        [data-theme="dark"] .auth-divider span,
+        [data-theme="dark"] .auth-footer p {
+            color: #aca9bb;
+        }
+
+        [data-theme="dark"] .forgot-link,
+        [data-theme="dark"] .auth-footer a {
+            color: #a9cec2;
+        }
+
+        [data-theme="dark"] .auth-title {
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .form-control {
+            background: #1a1a1a;
+            color: #aca9bb;
+            border-color: #474554;
+        }
+
+        [data-theme="dark"] .form-label {
+            color: #aca9bb;
+        }
+
+        [data-theme="dark"] .forgot-link,
+        [data-theme="dark"] .auth-footer a {
+            color: #a9cec2;
         }
 
         .auth-card-header {

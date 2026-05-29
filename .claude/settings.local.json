@@ -15,7 +15,14 @@
       "Bash(dotnet new *)",
       "Bash(dotnet add *)",
       "Bash(dotnet test *)",
-      "Bash(dotnet sln *)"
+      "Bash(dotnet sln *)",
+      "Bash(taskkill /F /PID 5484)",
+      "Bash(powershell -Command \"Stop-Process -Id 5484 -Force\")",
+      "Bash(powershell -Command \"Stop-Process -Id 9864 -Force\")",
+      "Bash(taskkill //F //PID 19160)",
+      "Bash(findstr :5192)",
+      "Bash(taskkill //F //PID 10564)",
+      "Bash(findstr LISTENING)"
     ]
   }
 }

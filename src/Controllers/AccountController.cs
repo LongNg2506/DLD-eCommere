@@ -192,6 +192,60 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ExternalLogin(string provider = "Google", string? returnUrl = null)
+    {
+        var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { returnUrl });
+        var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+        return Challenge(properties, provider);
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null)
+    {
+        var result = await HttpContext.AuthenticateAsync("ChronoAuth");
+        if (result?.Succeeded == false || result?.Principal == null)
+        {
+            return RedirectToAction("Login", new { returnUrl });
+        }
+
+        var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+        var fullName = result.Principal.FindFirstValue(ClaimTypes.Name);
+
+        if (string.IsNullOrEmpty(email))
+        {
+            return RedirectToAction("Login", new { returnUrl });
+        }
+
+        var user = await _authService.FindOrCreateExternalUserAsync(email, fullName ?? email);
+
+        if (user == null)
+        {
+            ModelState.AddModelError("", "External authentication failed.");
+            return RedirectToAction("Login", new { returnUrl });
+        }
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.FullName),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Role, user.Role)
+        };
+
+        var identity = new ClaimsIdentity(claims, "ChronoAuth");
+        var principal = new ClaimsPrincipal(identity);
+
+        await HttpContext.SignInAsync("ChronoAuth", principal);
+
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return Redirect(returnUrl);
+
+        return RedirectToAction("Index", "Home");
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()

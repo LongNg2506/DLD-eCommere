@@ -13,4 +13,5 @@ public interface IAuthService
     Task<string?> GenerateResetTokenAsync(string email);
     Task<bool> ResetPasswordAsync(string token, string newPassword);
     Task<List<UserOrderDto>> GetOrdersByUserIdAsync(int userId);
+    Task<UserDto?> FindOrCreateExternalUserAsync(string email, string fullName);
 }
