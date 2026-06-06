@@ -12,12 +12,12 @@ public class Payment
     [Required]
     [MaxLength(50)]
     public string PaymentMethod { get; set; } = "COD";
-    // COD | BankTransfer | OnlinePayment
+    // COD | OnlinePayment
 
     [Required]
     [MaxLength(20)]
-    public string PaymentStatus { get; set; } = "Pending";
-    // Pending | Paid | Failed | Refunded
+    public string PaymentStatus { get; set; } = "Unpaid";
+    // Unpaid | Paid | Refunded
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; set; }
@@ -34,3 +34,4 @@ public class Payment
 
     public Order? Order { get; set; }
 }
+

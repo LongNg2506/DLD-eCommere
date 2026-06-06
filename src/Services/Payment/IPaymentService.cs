@@ -4,6 +4,7 @@ public interface IPaymentService
 {
     Task<PaymentResult> RecordPaymentAsync(int orderId, string method, string? transactionId, string? note);
     Task<PaymentResult> ConfirmPaymentAsync(int orderId, string? transactionId, string? note);
+    Task<PaymentResult> ConfirmCODPaymentAsync(int orderId, string? note);
     Task<PaymentResult> RefundPaymentAsync(int orderId, string? note);
 }
 

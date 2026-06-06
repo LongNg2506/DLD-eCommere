@@ -62,7 +62,7 @@ public class OrderService : IOrderService
                 Note = request.Note,
                 CustomerName = request.CustomerName,
                 PaymentMethod = request.PaymentMethod,
-                PaymentStatus = "Pending",
+                PaymentStatus = "Unpaid",
                 InvoiceNumber = invoiceNumber,
                 CreatedAt = DateTime.Now
             };
@@ -98,7 +98,7 @@ public class OrderService : IOrderService
                 {
                     OrderId = order.Id,
                     PaymentMethod = request.PaymentMethod,
-                    PaymentStatus = "Pending",
+                    PaymentStatus = "Unpaid",
                     Amount = order.TotalAmount,
                     CreatedAt = DateTime.Now
                 });
@@ -249,3 +249,5 @@ public class OrderService : IOrderService
         return cart?.Id;
     }
 }
+
+

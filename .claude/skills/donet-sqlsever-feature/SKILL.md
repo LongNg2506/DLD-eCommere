@@ -27,7 +27,7 @@ Tạo feature theo cùng một chuẩn trong toàn bộ dự án
 2. Ngữ cảnh dự án
 Dự án sử dụng:
 C#
-.NET 8
+.NET 9
 ASP.NET Core MVC hoặc ASP.NET Core Web API
 SQL Server
 Entity Framework Core

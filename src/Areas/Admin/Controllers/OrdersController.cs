@@ -30,7 +30,6 @@ public class OrdersController : Controller
         return View(model);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int id, string status, string? note)
@@ -41,17 +40,35 @@ public class OrdersController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
 
-    [Authorize(Roles = "Admin,Staff")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ConfirmPayment(int id, string? transactionId, string? note)
     {
         var updatedBy = User.Identity?.Name ?? "Staff";
         var success = await _service.ConfirmPaymentAsync(id, transactionId, note, updatedBy);
-        if (success)
-            TempData["Success"] = "Payment confirmed successfully.";
-        else
-            TempData["Error"] = "Failed to confirm payment.";
+        if (success) TempData["Success"] = "Payment confirmed successfully.";
+        else TempData["Error"] = "Failed to confirm payment.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConfirmCODReceipt(int id, string? note)
+    {
+        var updatedBy = User.Identity?.Name ?? "Staff";
+        var success = await _service.ConfirmCODPaymentAsync(id, updatedBy, note);
+        if (success) TempData["Success"] = "COD payment confirmed. Order delivered.";
+        else TempData["Error"] = "Failed to confirm COD receipt.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeductStock(int id)
+    {
+        var success = await _service.DeductStockAsync(id);
+        if (success) TempData["Success"] = "Stock deducted successfully.";
+        else TempData["Error"] = "Failed to deduct stock.";
         return RedirectToAction(nameof(Details), new { id });
     }
 

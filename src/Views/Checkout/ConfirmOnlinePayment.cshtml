@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "Confirm Payment";
+    Layout = "_Layout";
+}
+
+<div class="page-container">
+    <div class="container" style="max-width: 600px;">
+        <div class="confirm-payment-card">
+            <div class="confirm-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+            <h2>Payment Confirmation</h2>
+            <div class="confirm-details">
+                <div class="confirm-row">
+                    <span class="confirm-label">Invoice</span>
+                    <span class="confirm-value">@ViewBag.InvoiceNumber</span>
+                </div>
+                <div class="confirm-row">
+                    <span class="confirm-label">Amount</span>
+                    <span class="confirm-value confirm-amount">@(((decimal)ViewBag.Amount).ToString("N0")) VND</span>
+                </div>
+            </div>
+            <p class="confirm-msg">You have completed the transfer for this order.</p>
+            <form asp-action="ConfirmOnlinePayment" asp-route-orderId="@ViewBag.OrderId" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="confirm-btn">Confirm Payment</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.confirm-payment-card {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+.confirm-icon {
+    color: var(--accent);
+}
+.confirm-payment-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+.confirm-details {
+    width: 100%;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.confirm-row {
+    display: flex;
+    justify-content: space-between;
+}
+.confirm-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+.confirm-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.confirm-amount {
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+.confirm-msg {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+}
+.confirm-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: #111;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.confirm-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(169,206,194,0.35);
+}
+</style>

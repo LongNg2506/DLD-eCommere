@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<CartSession> CartSessions => Set<CartSession>();
     public DbSet<CartSessionItem> CartSessionItems => Set<CartSessionItem>();
     public DbSet<Payment> Payments => Set<Payment>();
+public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
     public DbSet<OrderStatusHistory> OrderStatusHistories => Set<OrderStatusHistory>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -165,6 +166,15 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+modelBuilder.Entity<BankAccount>(entity =>
+{
+entity.ToTable("BankAccounts");
+entity.Property(x => x.BankName).IsRequired().HasMaxLength(100);
+entity.Property(x => x.AccountName).IsRequired().HasMaxLength(100);
+entity.Property(x => x.AccountNumber).IsRequired().HasMaxLength(30);
+entity.Property(x => x.Branch).HasMaxLength(200);
+});
+
         modelBuilder.Entity<OrderStatusHistory>(entity =>
         {
             entity.ToTable("OrderStatusHistories");
@@ -173,6 +183,19 @@ public class AppDbContext : DbContext
                 .HasForeignKey(x => x.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+
+modelBuilder.Entity<BankAccount>().HasData(
+new BankAccount
+{
+Id = 1,
+BankName = "Vietcombank",
+AccountName = "DLD WATCH STORE",
+AccountNumber = "0123456789",
+Branch = "Ho Chi Minh City",
+IsActive = true,
+CreatedAt = new DateTime(2026, 1, 1)
+}
+);
 
         modelBuilder.Entity<Category>().HasData(
             new Category

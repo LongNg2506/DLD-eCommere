@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyProject.Areas.Admin.ViewModels;
 using MyProject.Data;
+using MyProject.Models;
 
 namespace MyProject.Areas.Admin.Services;
 
@@ -164,6 +165,66 @@ public class OrderAdminService : IOrderAdminService
             UpdatedBy = updatedBy,
             CreatedAt = DateTime.Now
         });
+
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> ConfirmCODPaymentAsync(int id, string? updatedBy, string? note)
+    {
+        var order = await _db.Orders.FindAsync(id);
+        if (order == null) return false;
+
+        order.Status = "Delivered";
+        order.PaymentStatus = "Paid";
+
+        var payment = await _db.Payments.FirstOrDefaultAsync(p => p.OrderId == id);
+        if (payment != null)
+        {
+            payment.PaymentStatus = "Paid";
+            payment.PaidAt = DateTime.Now;
+            payment.PaymentNote = note;
+        }
+        else
+        {
+            _db.Payments.Add(new MyProject.Models.Payment
+            {
+                OrderId = id,
+                PaymentMethod = "COD",
+                PaymentStatus = "Paid",
+                Amount = order.TotalAmount,
+                PaidAt = DateTime.Now,
+                CreatedAt = DateTime.Now
+            });
+        }
+
+        _db.OrderStatusHistories.Add(new MyProject.Models.OrderStatusHistory
+        {
+            OrderId = id,
+            Status = "Delivered",
+            Note = note ?? "COD payment received on delivery",
+            UpdatedBy = updatedBy,
+            CreatedAt = DateTime.Now
+        });
+
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeductStockAsync(int id)
+    {
+        var items = await _db.OrderItems
+            .Include(i => i.Product)
+            .Where(i => i.OrderId == id)
+            .ToListAsync();
+
+        foreach (var item in items)
+        {
+            if (item.Product != null)
+            {
+                item.Product.StockQuantity -= item.Quantity;
+            }
+        }
 
         await _db.SaveChangesAsync();
         return true;

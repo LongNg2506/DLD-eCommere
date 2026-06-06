@@ -1,0 +1,243 @@
+@model MyProject.Controllers.OnlinePaymentQRViewModel
+@{
+    ViewData["Title"] = "Online Payment";
+    Layout = "_Layout";
+}
+
+<div class="page-container">
+    <div class="container" style="max-width: 720px;">
+        <div class="page-header" style="text-align: center;">
+            <h1>Online Payment</h1>
+            <p class="page-subtitle">Scan the QR code below to complete your payment</p>
+        </div>
+
+        <div class="qr-payment-card">
+            <div class="qr-payment-info">
+                <div class="qr-info-row">
+                    <span class="qr-info-label">Invoice</span>
+                    <span class="qr-info-value">@Model.InvoiceNumber</span>
+                </div>
+                <div class="qr-info-row">
+                    <span class="qr-info-label">Amount</span>
+                    <span class="qr-info-value qr-amount">@Model.Amount.ToString("N0") VND</span>
+                </div>
+            </div>
+
+            <div class="qr-code-wrapper">
+                <img src="data:image/png;base64,@Model.QRCodeBase64" alt="QR Code" />
+            </div>
+
+            <div class="qr-bank-info">
+                <div class="qr-bank-row">
+                    <span class="qr-bank-label">Bank</span>
+                    <span class="qr-bank-value">@Model.BankName</span>
+                </div>
+                <div class="qr-bank-row">
+                    <span class="qr-bank-label">Account</span>
+                    <span class="qr-bank-value">@Model.AccountNumber (@Model.AccountName)</span>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Branch))
+                {
+                    <div class="qr-bank-row">
+                        <span class="qr-bank-label">Branch</span>
+                        <span class="qr-bank-value">@Model.Branch</span>
+                    </div>
+                }
+                <div class="qr-bank-row">
+                    <span class="qr-bank-label">Transfer Content</span>
+                    <span class="qr-bank-value qr-transfer">@Model.TransferContent</span>
+                </div>
+            </div>
+
+            <form asp-action="MockOnlinePaymentConfirmed" asp-route-orderId="@Model.OrderId" method="post" class="qr-confirm-form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="qr-confirm-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    I have completed the transfer
+                </button>
+            </form>
+            <p class="qr-note">After transferring, click the button above to confirm your payment.</p>
+            <div id="qr-status" class="qr-status"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const orderId = @Model.OrderId;
+    let pollInterval;
+
+    function checkStatus() {
+        fetch('@Url.Action("CheckPaymentStatus", "Checkout")' + '?orderId=' + orderId)
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'Paid' || data.status === 'Completed') {
+                    clearInterval(pollInterval);
+                    const el = document.getElementById('qr-status');
+                    el.textContent = 'Payment detected! Redirecting...';
+                    el.className = 'qr-status qr-status-success';
+                    setTimeout(function() {
+                        window.location.href = '@Url.Action("PaymentSuccess", "Checkout")' + '?orderId=' + orderId;
+                    }, 1500);
+                }
+            })
+            .catch(() => {});
+    }
+
+    pollInterval = setInterval(checkStatus, 2000);
+})();
+</script>
+
+<style>
+.qr-payment-card {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+.qr-payment-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.qr-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.qr-info-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+.qr-info-value {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+.qr-amount {
+    color: var(--accent);
+    font-size: 1.3rem;
+}
+.qr-code-wrapper {
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.qr-code-wrapper img {
+    width: 200px;
+    height: 200px;
+    display: block;
+}
+.qr-bank-info {
+    width: 100%;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid var(--border);
+}
+.qr-bank-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.qr-bank-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+.qr-bank-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-align: right;
+}
+.qr-transfer {
+    color: var(--accent);
+    letter-spacing: 0.5px;
+}
+.qr-confirm-form {
+    width: 100%;
+    margin-top: 4px;
+}
+.qr-confirm-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: #111;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.qr-confirm-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(169,206,194,0.35);
+}
+.qr-note {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+@@media (max-width: 576px) {
+    .qr-payment-card { padding: 20px; }
+    .qr-code-wrapper img { width: 160px; height: 160px; }
+}
+.qr-status {
+    margin-top: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.qr-status-success {
+    background: rgba(169,206,194,0.35);
+    color: #198754;
+    font-weight: 700;
+}
+</style>
+
+<script>
+(function() {
+    const orderId = @Model.OrderId;
+    const checkUrl = '@Url.Action("CheckPaymentStatus", "Checkout")' + '?orderId=' + orderId;
+    const dot = document.getElementById('pollingDot');
+    const text = document.getElementById('pollingText');
+
+    let pollInterval = setInterval(async function() {
+        try {
+            const res = await fetch(checkUrl);
+            const data = await res.json();
+            if (data.status === 'Paid') {
+                clearInterval(pollInterval);
+                if (dot) { dot.classList.add('paid'); }
+                if (text) { text.textContent = 'Payment confirmed! Redirecting...'; }
+                setTimeout(function() {
+                    window.location.href = '@Url.Action("PaymentSuccess", "Checkout")' + '?orderId=' + orderId;
+                }, 800);
+            }
+        } catch (e) {
+            clearInterval(pollInterval);
+            if (text) { text.textContent = 'Connection error. Please refresh.'; }
+        }
+    }, 2000);
+})();
+</script>

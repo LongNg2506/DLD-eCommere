@@ -36,7 +36,7 @@ public class PaymentService : IPaymentService
             {
                 OrderId = orderId,
                 PaymentMethod = method,
-                PaymentStatus = "Pending",
+                PaymentStatus = "Unpaid",
                 Amount = order.TotalAmount,
                 TransactionId = transactionId,
                 PaymentNote = note,
@@ -89,6 +89,48 @@ public class PaymentService : IPaymentService
 
         await _db.SaveChangesAsync();
         return new PaymentResult { Success = true, Message = "Payment confirmed." };
+    }
+
+    public async Task<PaymentResult> ConfirmCODPaymentAsync(int orderId, string? note)
+    {
+        var order = await _db.Orders.FindAsync(orderId);
+        if (order == null)
+            return new PaymentResult { Success = false, Message = "Order not found." };
+
+        var payment = await _db.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
+        if (payment != null)
+        {
+            payment.PaymentStatus = "Paid";
+            payment.PaidAt = DateTime.Now;
+            payment.PaymentNote = note;
+        }
+        else
+        {
+            _db.Payments.Add(new PaymentModel
+            {
+                OrderId = orderId,
+                PaymentMethod = "COD",
+                PaymentStatus = "Paid",
+                Amount = order.TotalAmount,
+                PaidAt = DateTime.Now,
+                CreatedAt = DateTime.Now
+            });
+        }
+
+        order.Status = "Delivered";
+        order.PaymentStatus = "Paid";
+
+        _db.OrderStatusHistories.Add(new OrderStatusHistory
+        {
+            OrderId = orderId,
+            Status = "Delivered",
+            Note = note ?? "COD payment received on delivery",
+            UpdatedBy = "Staff",
+            CreatedAt = DateTime.Now
+        });
+
+        await _db.SaveChangesAsync();
+        return new PaymentResult { Success = true, Message = "COD payment confirmed. Order delivered." };
     }
 
     public async Task<PaymentResult> RefundPaymentAsync(int orderId, string? note)

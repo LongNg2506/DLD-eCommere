@@ -8,4 +8,6 @@ public interface IOrderAdminService
     Task<OrderAdminDetailViewModel?> GetDetailAsync(int id);
     Task<bool> UpdateStatusAsync(int id, string status, string? updatedBy, string? note);
     Task<bool> ConfirmPaymentAsync(int id, string? transactionId, string? note, string? updatedBy);
+    Task<bool> ConfirmCODPaymentAsync(int id, string? updatedBy, string? note);
+    Task<bool> DeductStockAsync(int id);
 }
