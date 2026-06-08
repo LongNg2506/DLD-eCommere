@@ -3393,6 +3393,110 @@ img {
   color: var(--text-primary);
 }
 
+/* ============================================
+   CAROUSEL / SLIDER
+   ============================================ */
+.carousel-spacer { flex-shrink: 0; width: 50px; }
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  overflow: visible;
+  gap: 0;
+  padding: 0 88px;
+}
+
+.carousel-track {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding: 8px 8px 16px;
+  scroll-padding-inline: 8px;
+}
+
+.carousel-track::-webkit-scrollbar { display: none; }
+
+.carousel-track .products-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 24px;
+  width: max-content;
+}
+
+.carousel-track .products-grid .product-card {
+  flex: 0 0 auto;
+  width: 300px;
+  height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel-prev {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.carousel-next {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.carousel-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  box-shadow: var(--shadow-sm);
+}
+
+.carousel-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.carousel-btn:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+@media (max-width: 991px) {
+  .carousel-wrapper { padding: 0 64px; }
+  .carousel-track .products-grid .product-card { width: 220px; }
+  .carousel-track .products-grid { gap: 16px; }
+  .carousel-btn { width: 36px; height: 36px; }
+}
+
+@media (max-width: 600px) {
+  .carousel-wrapper { padding: 0 40px; }
+  .carousel-track .products-grid .product-card { width: 155px; }
+  .carousel-track .products-grid { gap: 10px; }
+  .carousel-spacer { width: 30px; }
+  .carousel-btn { width: 28px; height: 28px; }
+  .carousel-btn svg { width: 14px; height: 14px; }
+  .carousel-prev { left: 6px; }
+  .carousel-next { right: 6px; }
+}
+
 /* Products grid */
 .products-grid {
   display: grid;

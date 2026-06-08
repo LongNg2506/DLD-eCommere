@@ -48,10 +48,10 @@ public class HomeController : Controller
 
         var vm = new HomeViewModel
         {
-            FeaturedProducts = allProducts.Take(4).ToList(),
-            NewArrivals = allProducts.OrderByDescending(p => p.CreatedAt).Take(4).ToList(),
-            BestSellers = allProducts.OrderByDescending(p => p.SalePrice).Take(4).ToList(),
-            FlashDeals = allProducts.Where(p => p.Discount > 0).OrderByDescending(p => p.Discount).Take(4).ToList(),
+            FeaturedProducts = allProducts.Take(20).ToList(),
+            NewArrivals = allProducts.OrderByDescending(p => p.CreatedAt).Take(20).ToList(),
+            BestSellers = allProducts.OrderByDescending(p => p.SalePrice).Take(20).ToList(),
+            FlashDeals = allProducts.Where(p => p.Discount > 0).OrderByDescending(p => p.Discount).Take(20).ToList(),
             Categories = BuildCategoryDisplays()
         };
 

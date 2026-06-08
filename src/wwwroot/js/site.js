@@ -449,3 +449,53 @@ function closeQuickView(e) {
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeQuickView();
 });
+
+// =============================================
+// CAROUSEL
+// =============================================
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.carousel-wrapper').forEach(function (wrapper) {
+    var track = wrapper.querySelector('.carousel-track');
+    var prevBtn = wrapper.querySelector('.carousel-prev');
+    var nextBtn = wrapper.querySelector('.carousel-next');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    function getCardStep() {
+      var card = track.querySelector('.product-card');
+      if (!card) return 324;
+      return card.offsetWidth + 24;
+    }
+
+    function updateButtons() {
+      var max = track.scrollWidth - track.clientWidth;
+      var sl = track.scrollLeft;
+      var atStart = sl <= 2;
+      var atEnd = sl >= max - 2;
+      prevBtn.style.opacity = atStart ? '0.35' : '1';
+      prevBtn.style.pointerEvents = atStart ? 'none' : 'auto';
+      nextBtn.style.opacity = atEnd ? '0.35' : '1';
+      nextBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
+    }
+
+    prevBtn.addEventListener('click', function () {
+      var target = Math.max(0, track.scrollLeft - getCardStep());
+      track.scrollTo({ left: target, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', function () {
+      var max = track.scrollWidth - track.clientWidth;
+      var target = Math.min(max, track.scrollLeft + getCardStep());
+      track.scrollTo({ left: target, behavior: 'smooth' });
+    });
+
+    track.addEventListener('scroll', updateButtons, { passive: true });
+    window.addEventListener('resize', function () {
+      var max = track.scrollWidth - track.clientWidth;
+      if (track.scrollLeft > max) track.scrollLeft = max;
+      updateButtons();
+    });
+
+    track.scrollLeft = 0;
+    updateButtons();
+  });
+});

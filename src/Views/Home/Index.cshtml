@@ -167,11 +167,22 @@
                     <div class="timer-block"><span class="timer-number">00</span><span class="timer-label">Sec</span></div>
                 </div>
             </div>
-            <div class="products-grid">
+            <div class="carousel-wrapper">
+                <button class="carousel-btn carousel-prev" aria-label="Previous">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="carousel-track">
+                    <div class="products-grid">
                 @foreach (var product in Model.FlashDeals)
                 {
                     @await Html.PartialAsync("_ProductCard", product)
                 }
+            </div>
+                    <div class="carousel-spacer"></div>
+                </div>
+                <button class="carousel-btn carousel-next" aria-label="Next">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
             </div>
         </div>
     </section>
@@ -229,11 +240,22 @@
             <h2 class="section-title">Featured Products</h2>
             <p class="section-subtitle">Hand-picked by our experts just for you</p>
         </div>
-        <div class="products-grid">
-            @foreach (var product in Model.FeaturedProducts)
-            {
-                @await Html.PartialAsync("_ProductCard", product)
-            }
+        <div class="carousel-wrapper">
+            <button class="carousel-btn carousel-prev" aria-label="Previous">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="carousel-track">
+                <div class="products-grid">
+                    @foreach (var product in Model.FeaturedProducts)
+                    {
+                        @await Html.PartialAsync("_ProductCard", product)
+                    }
+                </div>
+                <div class="carousel-spacer"></div>
+            </div>
+            <button class="carousel-btn carousel-next" aria-label="Next">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
         </div>
     </div>
 </section>
@@ -247,11 +269,22 @@
             <h2 class="section-title">New Arrivals</h2>
             <p class="section-subtitle">The latest additions to our collection</p>
         </div>
-        <div class="products-grid">
-            @foreach (var product in Model.NewArrivals)
-            {
-                @await Html.PartialAsync("_ProductCard", product)
-            }
+        <div class="carousel-wrapper">
+            <button class="carousel-btn carousel-prev" aria-label="Previous">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="carousel-track">
+                <div class="products-grid">
+                    @foreach (var product in Model.NewArrivals)
+                    {
+                        @await Html.PartialAsync("_ProductCard", product)
+                    }
+                </div>
+                <div class="carousel-spacer"></div>
+            </div>
+            <button class="carousel-btn carousel-next" aria-label="Next">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
         </div>
     </div>
 </section>

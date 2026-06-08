@@ -50,7 +50,35 @@
       "Bash(curl -v http://192.168.1.4:5192)",
       "Bash(curl -s \"http://192.168.1.4:5192/Checkout/CheckPaymentStatus?orderId=13\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://192.168.1.4:5192/Checkout/ConfirmOnlinePayment?orderId=13\")",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(python3 fix_responsive.py)",
+      "Bash(where python *)",
+      "Bash(where python3 *)",
+      "Bash(where node *)",
+      "Bash(where dotnet *)",
+      "Bash(node fix_responsive.js)",
+      "Bash(git show *)",
+      "Read(//tmp/**)",
+      "Bash(git -C \"d:/LongNg\\(Aptec\\)/DLD-eCommere\" status --short)",
+      "Bash(node fix_carousel.js)",
+      "Bash(sed -n '1299,1303p' \"d:/LongNg\\(Aptec\\)/DLD-eCommere/src/wwwroot/css/site.css\")",
+      "Bash(sed -n '1301p' \"d:/LongNg\\(Aptec\\)/DLD-eCommere/src/wwwroot/css/site.css\")",
+      "Bash(taskkill //F //PID 11732)",
+      "Bash(sed -n '1318,1322p' \"d:/LongNg\\(Aptec\\)/DLD-eCommere/src/wwwroot/css/site.css\")",
+      "Bash(sed -n '1349,1352p' \"d:/LongNg\\(Aptec\\)/DLD-eCommere/src/wwwroot/css/site.css\")",
+      "Bash(cat)",
+      "Bash(node fix_carousel_final.js)",
+      "Bash(node fix_carousel_v2.js)",
+      "Bash(node \"d:/LongNg\\(Aptec\\)/DLD-eCommere/add_carousel.js\")",
+      "Bash(tasklist //FI \"IMAGENAME eq MyProject.exe\")",
+      "Bash(sed -i 's/gap: 0; } \\\\.carousel-track/gap: 0; padding: 0 44px; } \\\\.carousel-track/' site.css)",
+      "Bash(sed -n '1318p' site.css)",
+      "Bash(git worktree *)",
+      "Bash(cd \"d:/LongNg\\(Aptec\\)/DLD-eCommere\" && rm -f src/wwwroot/css/site.css.bak* && rm -rf .claude/worktrees/)"
+    ],
+    "additionalDirectories": [
+      "\\tmp",
+      "D:\\LongNg(Aptec)\\DLD-eCommere\\src\\wwwroot\\css"
     ]
   }
 }
