@@ -86,7 +86,8 @@
       "Bash(taskkill //F //PID 17876)",
       "Bash(powershell -Command \"[IO.File]::WriteAllBytes\\('src/wwwroot/images/hero-poster.jpg', [Convert]::FromBase64String\\('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='\\)\\)\")",
       "Bash(pkill -f \"dotnet.*MyProject\")",
-      "Bash(taskkill //F //PID 13068)"
+      "Bash(taskkill //F //PID 13068)",
+      "Bash(taskkill //F //PID 11168)"
     ],
     "additionalDirectories": [
       "\\tmp",
