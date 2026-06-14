@@ -74,7 +74,19 @@
       "Bash(sed -i 's/gap: 0; } \\\\.carousel-track/gap: 0; padding: 0 44px; } \\\\.carousel-track/' site.css)",
       "Bash(sed -n '1318p' site.css)",
       "Bash(git worktree *)",
-      "Bash(cd \"d:/LongNg\\(Aptec\\)/DLD-eCommere\" && rm -f src/wwwroot/css/site.css.bak* && rm -rf .claude/worktrees/)"
+      "Bash(cd \"d:/LongNg\\(Aptec\\)/DLD-eCommere\" && rm -f src/wwwroot/css/site.css.bak* && rm -rf .claude/worktrees/)",
+      "Bash(git commit -m ' *)",
+      "Bash(git commit *)",
+      "Bash(taskkill /F /PID 17876)",
+      "Bash(tasklist /FI \"IMAGENAME eq MyProject.exe\")",
+      "Bash(findstr MyProject.exe)",
+      "Bash(tasklist /FI \"IMAGENAME eq iisexpress.exe\")",
+      "Bash(dotnet clean *)",
+      "Bash(findstr -i MyProject)",
+      "Bash(taskkill //F //PID 17876)",
+      "Bash(powershell -Command \"[IO.File]::WriteAllBytes\\('src/wwwroot/images/hero-poster.jpg', [Convert]::FromBase64String\\('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='\\)\\)\")",
+      "Bash(pkill -f \"dotnet.*MyProject\")",
+      "Bash(taskkill //F //PID 13068)"
     ],
     "additionalDirectories": [
       "\\tmp",
